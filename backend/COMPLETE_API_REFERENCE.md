@@ -1,4 +1,4 @@
-# 🔌 COMPLETE API REFERENCE - 38 ENDPOINTS (Phase 1 Complete)
+# 🔌 COMPLETE API REFERENCE - 44 ENDPOINTS (Phase 2 Complete)
 
 ## Quick Reference
 
@@ -11,7 +11,9 @@
 | **Categories** | 2 | 2 | 1 | 5 |
 | **Reservations** | 0 | 4 | 3 | 7 |
 | **Dashboard** | 0 | 0 | 8 | 8 |
-| **Total** | **10** | **21** | **14** | **38** |
+| **Notifications** | 0 | 5 | - | 5 |
+| **Reviews** | 1 | 3 | - | 4 |
+| **Total** | **11** | **29** | **14** | **44** |
 
 ---
 
@@ -479,6 +481,113 @@ Response: 200 {
 
 ---
 
+## � NOTIFICATIONS (5 Endpoints) - NEW!
+
+### Get Notifications
+```
+GET /api/notifications?page=1&limit=10
+Status: PROTECTED
+Headers: Authorization: Bearer TOKEN
+Response: 200 PAGINATED [
+  {
+    notification_id, user_id, type, title, message,
+    read, created_at, read_at
+  }
+]
+```
+
+### Get Unread Count
+```
+GET /api/notifications/unread
+Status: PROTECTED
+Headers: Authorization: Bearer TOKEN
+Response: 200 { unreadCount: 3 }
+```
+
+### Mark Notification as Read
+```
+PATCH /api/notifications/:id/read
+Status: PROTECTED
+Headers: Authorization: Bearer TOKEN
+Response: 200 { success: true }
+Requirement: User must own the notification
+```
+
+### Mark All as Read
+```
+PATCH /api/notifications/mark-all-read
+Status: PROTECTED
+Headers: Authorization: Bearer TOKEN
+Response: 200 { success: true }
+Effect: All user notifications marked as read
+```
+
+### Delete Notification
+```
+DELETE /api/notifications/:id
+Status: PROTECTED
+Headers: Authorization: Bearer TOKEN
+Response: 200 { success: true }
+Requirement: User must own the notification
+```
+
+---
+
+## ⭐ REVIEWS (4 Endpoints) - NEW!
+
+### Get Book Reviews
+```
+GET /api/books/:bookId/reviews
+Status: PUBLIC
+Response: 200 {
+  reviews: [{
+    review_id, book_id, user_id, rating, comment,
+    username, created_at
+  }],
+  stats: {
+    averageRating, totalReviews
+  }
+}
+```
+
+### Create Review
+```
+POST /api/books/:bookId/reviews
+Status: PROTECTED
+Headers: Authorization: Bearer TOKEN
+Body: {
+  "rating": 4,
+  "comment": "Great book!"
+}
+Response: 201 { reviewId, rating, comment }
+Constraints:
+  - User must have borrowed the book
+  - User cannot create duplicate reviews for same book
+  - Rating must be 1-5
+  - Comment max 1000 characters
+```
+
+### Update Review
+```
+PUT /api/books/:bookId/reviews/:reviewId
+Status: PROTECTED
+Headers: Authorization: Bearer TOKEN
+Body: { "rating": 5, "comment": "Updated comment" }
+Response: 200 { success: true }
+Requirement: User must own the review
+```
+
+### Delete Review
+```
+DELETE /api/books/:bookId/reviews/:reviewId
+Status: PROTECTED
+Headers: Authorization: Bearer TOKEN
+Response: 200 { success: true }
+Requirement: User must own the review
+```
+
+---
+
 ## 🔐 Access Control Matrix
 
 ```
@@ -488,6 +597,8 @@ Role: MEMBER
 ├─ Can checkout/return books
 ├─ Can create/cancel own reservations
 ├─ Can view own profile
+├─ Can view & manage own notifications
+├─ Can create reviews (for borrowed books)
 └─ Cannot: create categories, view dashboard
 
 Role: LIBRARIAN
