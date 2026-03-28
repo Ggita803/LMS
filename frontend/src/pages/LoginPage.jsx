@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { Mail, Lock, ArrowRight } from 'lucide-react';
@@ -26,7 +26,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-library-50 to-accent-50 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
       <div className="max-w-md w-full mx-4">
         <div className="card">
           <div className="text-center mb-8">
@@ -72,7 +72,7 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full flex items-center justify-center gap-2"
+              className="w-full py-3 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-lg font-semibold hover:shadow-lg transition-smooth flex items-center justify-center gap-2"
             >
               {loading ? 'Signing in...' : 'Sign In'}
               {!loading && <ArrowRight className="w-4 h-4" />}
@@ -82,9 +82,9 @@ const LoginPage = () => {
           <div className="mt-6 text-center">
             <p className="text-muted">
               Don't have an account?{' '}
-              <a href="/register" className="text-library-600 hover:text-library-700 font-semibold">
+              <Link to="/register" className="text-sky-600 hover:text-sky-700 font-semibold">
                 Sign up here
-              </a>
+              </Link>
             </p>
           </div>
         </div>
