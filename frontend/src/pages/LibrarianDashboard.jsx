@@ -68,7 +68,6 @@ const LibrarianDashboard = () => {
       <div className="animate-fade-in">
         <WelcomeBanner 
           userName={user?.username || 'Librarian'}
-          userRole="librarian"
           primaryText="Welcome to the Librarian Command Center"
           secondaryText="Manage your collection, track member activities, and generate insights"
         />

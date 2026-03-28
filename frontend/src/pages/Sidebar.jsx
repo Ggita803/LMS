@@ -12,7 +12,13 @@ import {
   Heart,
   Bookmark,
   HelpCircle,
-  User
+  User,
+  AlertCircle,
+  DollarSign,
+  TrendingUp,
+  BookMarked,
+  FileText,
+  Clock
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -35,9 +41,13 @@ const Sidebar = () => {
   ];
 
   const adminItems = [
+    { icon: LayoutDashboard, label: 'Dashboard', path: '/librarian' },
     { icon: Database, label: 'Manage Stock', path: '/manage-books' },
+    { icon: BookMarked, label: 'Borrowings', path: '/active-borrowings' },
+    { icon: AlertCircle, label: 'Overdue Books', path: '/overdue-management', color: 'text-red-600' },
+    { icon: DollarSign, label: 'Fine Collection', path: '/fine-management', color: 'text-emerald-600' },
     { icon: Users, label: 'Members', path: '/manage-users' },
-    { icon: ShieldCheck, label: 'Reports', path: '/reports' },
+    { icon: TrendingUp, label: 'Reports', path: '/reports' },
   ];
 
   return (
@@ -56,7 +66,7 @@ const Sidebar = () => {
         <div className="flex flex-col items-center text-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700">
           {/* Avatar */}
           <div className="relative mb-3">
-            <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold text-2xl">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold text-2xl">
               {user?.username?.[0].toUpperCase()}
             </div>
             <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white dark:border-slate-800"></div>
@@ -65,8 +75,11 @@ const Sidebar = () => {
           {/* Username */}
           <p className="text-sm font-bold text-slate-900 dark:text-white mb-2 line-clamp-2">{user?.username}</p>
 
+          {/* Email */}
+          <p className="text-xs text-slate-500 dark:text-slate-400 truncate w-full mb-3">{user?.email || 'member@library.local'}</p>
+
           {/* Role Badge */}
-          <span className={`inline-flex items-center gap-1 mb-3 px-2 py-1 rounded-full text-[10px] font-semibold ${
+          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold ${
             isLibrarian 
               ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' 
               : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
@@ -74,9 +87,6 @@ const Sidebar = () => {
             <span className={`w-1.5 h-1.5 rounded-full ${isLibrarian ? 'bg-blue-500' : 'bg-emerald-500'}`}></span>
             {isLibrarian ? 'Librarian' : 'Member'}
           </span>
-
-          {/* Email */}
-          <p className="text-xs text-slate-500 dark:text-slate-400 truncate w-full">{user?.email || 'member@library.local'}</p>
         </div>
       </div>
 
@@ -99,9 +109,9 @@ const Sidebar = () => {
 
         {isLibrarian && (
           <div className="pt-4">
-            <p className="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Management</p>
+            <p className="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Library Management</p>
             {adminItems.map((item) => (
-              <NavLink key={item.path} to={item.path} className={({ isActive }) => `flex items-center gap-3 px-4 py-3 rounded-xl transition-smooth group ${isActive ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}>
+              <NavLink key={item.path} to={item.path} className={({ isActive }) => `flex items-center gap-3 px-4 py-3 rounded-xl transition-smooth group ${isActive ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20' : item.color ? item.color + ' dark:text-slate-300' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}>
                 <item.icon className="w-5 h-5" />
                 <span className="font-medium">{item.label}</span>
               </NavLink>
