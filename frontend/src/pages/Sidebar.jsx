@@ -124,10 +124,11 @@ const Sidebar = () => {
     { icon: Users, label: 'Members', path: '/manage-users' },
     { icon: BookOpen, label: 'Books', path: '/books-library'},
     {icon: Database, label: 'Categories', path: '/manage-categories' },
+    { icon: BarChart3, label: 'Analytics & Reports', path: '/reports' },
+    { icon: Bookmark, label: 'My Reservations', path: '/reservations' },
     { icon: Library, label: 'My Bookshelf', path: '/my-library' },
     { icon: History, label: 'Borrowing History', path: '/borrowing-history' },
     { icon: Heart, label: 'Wishlist', path: '/wishlist' },
-    { icon: Bookmark, label: 'My Reservations', path: '/reservations' },
     { icon: HelpCircle, label: 'Help & FAQ', path: '/faq' },
   ];
 
@@ -396,10 +397,6 @@ const Sidebar = () => {
       </nav>
 
       <div className="p-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
-        <Link to="/settings" className="flex items-center gap-3 px-4 py-2 text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800">
-          <Settings className="w-5 h-5" />
-          <span className="text-sm font-medium">Settings</span>
-        </Link>
         <button className="w-full flex items-center gap-3 px-4 py-2 text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">
           <LogOut className="w-5 h-5" />
           <span className="text-sm font-medium">Logout</span>

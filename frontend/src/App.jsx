@@ -37,6 +37,31 @@ import ScrollToTop from './pages/ScrollToTop';
 // New Admin Pages
 import UsersPage from './pages/Users/UsersPage';
 import BooksPage from './pages/Books/BooksPage';
+import ReservationsPage from './pages/Reservations/ReservationsPage';
+
+// Borrowing Pages
+import ActiveBorrowingsPage from './pages/Borrowings/ActiveBorrowingsPage';
+import OverdueManagementPage from './pages/Borrowings/OverdueManagementPage';
+import DueSoonPage from './pages/Borrowings/DueSoonPage';
+import ProcessReturnPage from './pages/Borrowings/ProcessReturnPage';
+import RenewBooksPage from './pages/Borrowings/RenewBooksPage';
+
+// Fine Pages
+import FineManagementPage from './pages/Fines/FineManagementPage';
+import OutstandingFinesPage from './pages/Fines/OutstandingFinesPage';
+import PaidFinesPage from './pages/Fines/PaidFinesPage';
+import FineReportsPage from './pages/Fines/FineReportsPage';
+
+// Member Pages
+import ActiveMembersPage from './pages/Members/ActiveMembersPage';
+import SuspendedMembersPage from './pages/Members/SuspendedMembersPage';
+import MemberStatsPage from './pages/Members/MemberStatsPage';
+
+// Admin Pages
+import StatisticsPage from './pages/Admin/StatisticsPage';
+import AuditLogPage from './pages/Admin/AuditLogPage';
+import NotificationsAdminPage from './pages/Admin/NotificationsPage';
+import SendNotificationsPage from './pages/Admin/SendNotificationsPage';
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
@@ -95,48 +120,48 @@ function App() {
             
             {/* New Member Management Routes */}
             <Route path="/add-member" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">➕ Add New Member</h1><p className="mt-4 text-slate-600">Member registration form (Coming Soon)</p></div>} />
-            <Route path="/active-members" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">✅ Active Members</h1><p className="mt-4 text-slate-600">View active members (Coming Soon)</p></div>} />
-            <Route path="/suspended-members" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🚫 Suspended Members</h1><p className="mt-4 text-slate-600">Manage suspended accounts (Coming Soon)</p></div>} />
+            <Route path="/active-members" element={<ActiveMembersPage />} />
+            <Route path="/suspended-members" element={<SuspendedMembersPage />} />
             <Route path="/search-members" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🔍 Search Members</h1><p className="mt-4 text-slate-600">Advanced member search (Coming Soon)</p></div>} />
             <Route path="/member-profiles" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">👤 Member Profiles</h1><p className="mt-4 text-slate-600">Detailed member information (Coming Soon)</p></div>} />
             <Route path="/member-roles" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🛡️ Member Roles & Permissions</h1><p className="mt-4 text-slate-600">Manage roles and permissions (Coming Soon)</p></div>} />
-            <Route path="/member-stats" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📊 Member Statistics</h1><p className="mt-4 text-slate-600">Member analytics (Coming Soon)</p></div>} />
-            <Route path="/send-notifications" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📧 Send Notifications</h1><p className="mt-4 text-slate-600">Mass notification system (Coming Soon)</p></div>} />
+            <Route path="/member-stats" element={<MemberStatsPage />} />
+            <Route path="/send-notifications" element={<SendNotificationsPage />} />
             
             {/* Borrowing Management Routes */}
-            <Route path="/active-borrowings" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📚 Active Borrowings</h1><p className="mt-4 text-slate-600">Track active loans (Coming Soon)</p></div>} />
-            <Route path="/overdue-management" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🚨 Overdue Items</h1><p className="mt-4 text-slate-600">Manage overdue books (Coming Soon)</p></div>} />
-            <Route path="/due-soon" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">⏰ Due Soon</h1><p className="mt-4 text-slate-600">Books due within 7 days (Coming Soon)</p></div>} />
+            <Route path="/active-borrowings" element={<ActiveBorrowingsPage />} />
+            <Route path="/overdue-management" element={<OverdueManagementPage />} />
+            <Route path="/due-soon" element={<DueSoonPage />} />
+            <Route path="/process-return" element={<ProcessReturnPage />} />
+            <Route path="/renew-books" element={<RenewBooksPage />} />
             <Route path="/borrowing-history" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📖 Borrowing History</h1><p className="mt-4 text-slate-600">Complete borrowing records (Coming Soon)</p></div>} />
-            <Route path="/process-return" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">✅ Process Return</h1><p className="mt-4 text-slate-600">Handle book returns (Coming Soon)</p></div>} />
-            <Route path="/renew-books" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🔄 Renew Books</h1><p className="mt-4 text-slate-600">Renew book loans (Coming Soon)</p></div>} />
             
             {/* Reservation Routes */}
-            <Route path="/reservations" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📌 All Reservations</h1><p className="mt-4 text-slate-600">Manage reservations (Coming Soon)</p></div>} />
+            <Route path="/reservations" element={<ReservationsPage />} />
             <Route path="/new-reservation" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">➕ New Reservation</h1><p className="mt-4 text-slate-600">Create reservation (Coming Soon)</p></div>} />
             <Route path="/pending-reservations" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">⏳ Pending Reservations</h1><p className="mt-4 text-slate-600">View pending reservations (Coming Soon)</p></div>} />
             <Route path="/ready-pickup" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">✅ Ready for Pickup</h1><p className="mt-4 text-slate-600">Books ready for member pickup (Coming Soon)</p></div>} />
             <Route path="/expired-reservations" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">⏱️ Expired Reservations</h1><p className="mt-4 text-slate-600">Manage expired reservations (Coming Soon)</p></div>} />
             
             {/* Fine Management Routes */}
-            <Route path="/fine-management" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">💰 Fine Collection</h1><p className="mt-4 text-slate-600">Track fine collections (Coming Soon)</p></div>} />
-            <Route path="/outstanding-fines" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">⚠️ Outstanding Fines</h1><p className="mt-4 text-slate-600">View unpaid fines (Coming Soon)</p></div>} />
-            <Route path="/paid-fines" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">✅ Paid Fines</h1><p className="mt-4 text-slate-600">View paid fines (Coming Soon)</p></div>} />
-            <Route path="/fine-reports" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📊 Fine Reports</h1><p className="mt-4 text-slate-600">Fine analytics (Coming Soon)</p></div>} />
+            <Route path="/fine-management" element={<FineManagementPage />} />
+            <Route path="/outstanding-fines" element={<OutstandingFinesPage />} />
+            <Route path="/paid-fines" element={<PaidFinesPage />} />
+            <Route path="/fine-reports" element={<FineReportsPage />} />
             
             {/* Communications Routes */}
-            <Route path="/admin-notifications" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🔔 Notifications</h1><p className="mt-4 text-slate-600">System notifications (Coming Soon)</p></div>} />
+            <Route path="/admin-notifications" element={<NotificationsAdminPage />} />
             <Route path="/send-messages" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">💌 Send Messages</h1><p className="mt-4 text-slate-600">Send messages to members (Coming Soon)</p></div>} />
             <Route path="/member-feedback" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">💬 Member Feedback</h1><p className="mt-4 text-slate-600">View member reviews (Coming Soon)</p></div>} />
             
             {/* Administration Routes */}
-            <Route path="/audit-log" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📋 System Audit Log</h1><p className="mt-4 text-slate-600">System activity log (Coming Soon)</p></div>} />
+            <Route path="/audit-log" element={<AuditLogPage />} />
             <Route path="/backup-restore" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">💾 Backup & Restore</h1><p className="mt-4 text-slate-600">Database backup options (Coming Soon)</p></div>} />
             <Route path="/maintenance" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🔧 System Maintenance</h1><p className="mt-4 text-slate-600">Maintenance tasks (Coming Soon)</p></div>} />
             <Route path="/security-settings" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🔐 Security Settings</h1><p className="mt-4 text-slate-600">System security (Coming Soon)</p></div>} />
             <Route path="/export-data" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📤 Export Data</h1><p className="mt-4 text-slate-600">Export to PDF/Excel (Coming Soon)</p></div>} />
             <Route path="/system-config" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">⚙️ System Configuration</h1><p className="mt-4 text-slate-600">System settings (Coming Soon)</p></div>} />
-            <Route path="/statistics" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📊 Statistics</h1><p className="mt-4 text-slate-600">System statistics (Coming Soon)</p></div>} />
+            <Route path="/statistics" element={<StatisticsPage />} />
             
             {/* Old Routes */}
             <Route path="/settings" element={<SettingsPage />} />
