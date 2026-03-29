@@ -68,16 +68,19 @@ const LibrarianDashboard = () => {
       <div className="animate-fade-in">
         <WelcomeBanner 
           userName={user?.username || 'Librarian'}
-          primaryText="Welcome to the Librarian Command Center"
-          secondaryText="Manage your collection, track member activities, and generate insights"
+          primaryText="Content Management Center"
+          secondaryText="Organize your library collection, manage categories, and track inventory"
         />
 
-        <div className="flex gap-3 mb-10">
-          <Link to="/reports" className="btn-outline flex items-center gap-2">
-            <FileText className="w-4 h-4" /> Reports
+        <div className="flex flex-wrap gap-3 mb-10">
+          <Link to="/manage-books" className="px-6 py-3 bg-sky-600 text-white rounded-lg flex items-center gap-2 hover:bg-sky-700 transition-smooth font-semibold shadow-lg hover:shadow-xl">
+            <Plus className="w-5 h-5" /> Add New Book
           </Link>
-          <Link to="/manage-books" className="px-4 py-2 bg-sky-600 text-white rounded-lg flex items-center gap-2 hover:bg-sky-700 transition-smooth font-medium">
-            <Plus className="w-4 h-4" /> Add New Book
+          <Link to="/manage-categories" className="px-6 py-3 bg-blue-600 text-white rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-smooth font-semibold">
+            <Database className="w-5 h-5" /> Manage Categories
+          </Link>
+          <Link to="/reports" className="px-6 py-3 border-2 border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-lg flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-smooth font-semibold">
+            <FileText className="w-5 h-5" /> View Reports
           </Link>
         </div>
 
@@ -101,28 +104,73 @@ const LibrarianDashboard = () => {
 
         {/* Quick Actions Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-10">
-          <Link to="/manage-users" className="card group hover:border-sky-500 transition-smooth">
+          <Link to="/manage-books" className="card group hover:border-sky-500 hover:shadow-lg transition-smooth">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-sky-100 rounded-lg group-hover:bg-sky-600 group-hover:text-white transition-smooth">
-                <Users className="w-6 h-6" />
+              <div className="p-4 bg-sky-100 dark:bg-sky-900/20 rounded-xl group-hover:bg-sky-600 group-hover:text-white transition-smooth">
+                <BookOpen className="w-7 h-7" />
               </div>
               <div>
-                <h4 className="font-bold">Member Directory</h4>
-                <p className="text-xs text-muted">Manage 452 active members</p>
+                <h4 className="font-bold text-lg">Book Inventory</h4>
+                <p className="text-xs text-muted">Add, update, and manage the book catalog</p>
               </div>
             </div>
           </Link>
-          <Link to="/manage-categories" className="card group hover:border-sky-500 transition-smooth">
+          <Link to="/manage-categories" className="card group hover:border-blue-500 hover:shadow-lg transition-smooth">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-blue-100 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-smooth">
-                <Database className="w-6 h-6" />
+              <div className="p-4 bg-blue-100 dark:bg-blue-900/20 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-smooth">
+                <Database className="w-7 h-7" />
               </div>
               <div>
-                <h4 className="font-bold">Book Categories</h4>
-                <p className="text-xs text-muted">24 active categories</p>
+                <h4 className="font-bold text-lg">Categories</h4>
+                <p className="text-xs text-muted">Create and organize book categories</p>
               </div>
             </div>
           </Link>
+          <Link to="/manage-users" className="card group hover:border-accent-500 hover:shadow-lg transition-smooth">
+            <div className="flex items-center gap-4">
+              <div className="p-4 bg-accent-100 dark:bg-accent-900/20 rounded-xl group-hover:bg-accent-600 group-hover:text-white transition-smooth">
+                <Users className="w-7 h-7" />
+              </div>
+              <div>
+                <h4 className="font-bold text-lg">Members</h4>
+                <p className="text-xs text-muted">Manage member accounts and roles</p>
+              </div>
+            </div>
+          </Link>
+        </div>
+
+        {/* Content Management Info Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-10">
+          <div className="card border-l-4 border-l-sky-600">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm text-muted uppercase tracking-wide mb-2">Pending Tasks</p>
+                <h3 className="text-4xl font-bold text-sky-600">8</h3>
+                <p className="text-xs text-muted mt-3">Books waiting for approval</p>
+              </div>
+              <BookOpen className="w-12 h-12 text-sky-100 dark:text-sky-900/30" />
+            </div>
+          </div>
+          <div className="card border-l-4 border-l-blue-600">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm text-muted uppercase tracking-wide mb-2">Active Categories</p>
+                <h3 className="text-4xl font-bold text-blue-600">24</h3>
+                <p className="text-xs text-muted mt-3">Well-organized collection</p>
+              </div>
+              <Database className="w-12 h-12 text-blue-100 dark:text-blue-900/30" />
+            </div>
+          </div>
+          <div className="card border-l-4 border-l-emerald-600">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm text-muted uppercase tracking-wide mb-2">Content Quality</p>
+                <h3 className="text-4xl font-bold text-emerald-600">94%</h3>
+                <p className="text-xs text-muted mt-3">Catalog completeness</p>
+              </div>
+              <TrendingUp className="w-12 h-12 text-emerald-100 dark:text-emerald-900/30" />
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-10">
