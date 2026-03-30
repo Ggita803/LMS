@@ -15,6 +15,6 @@ router.post('/', authenticate, authorize(ROLES.ADMIN, ROLES.LIBRARIAN), bookVali
 router.put('/:id', authenticate, authorize(ROLES.ADMIN, ROLES.LIBRARIAN), bookValidator, BookController.updateBook);
 
 // Protected Routes (Admin only)
-router.delete('/:id', authenticate, authorize(ROLES.ADMIN), BookController.deleteBook);
+router.delete('/:id', authenticate, authorize(ROLES.ADMIN,ROLES.LIBRARIAN), BookController.deleteBook);
 
 module.exports = router;
