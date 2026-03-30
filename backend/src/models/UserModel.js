@@ -39,7 +39,7 @@ class UserModel {
   static async getAll(limit, offset) {
     try {
       const [rows] = await pool.query(
-        'SELECT user_id, username, email, first_name, last_name, role FROM users LIMIT ? OFFSET ?',
+        'SELECT user_id, username, email, first_name, last_name, role, created_at FROM users LIMIT ? OFFSET ?',
         [limit, offset]
       );
       const [count] = await pool.query('SELECT COUNT(*) as total FROM users');

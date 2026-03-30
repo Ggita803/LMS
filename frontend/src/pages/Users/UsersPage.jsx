@@ -3,68 +3,57 @@ import { Plus, Edit2, Trash2, Eye } from 'lucide-react';
 import DataTable from '../../components/DataTable/DataTable';
 import AddUserModal from './AddUserModal';
 import MainLayout from '../MainLayout';
+import { createUser, getUsers, updateUser, deleteUser } from '../../services/userService';
 
 const UsersPageContent = () => {
-  const [users, setUsers] = useState([
-    {
-      id: '1',
-      name: 'Muguerwa Dickson',
-      email: 'muguerwa@university.edu',
-      studentId: '240080737',
-      role: 'Student',
-      status: 'active',
-      joinDate: '2025-03-27',
-    },
-    {
-      id: '2',
-      name: 'Gotta Ibrahim',
-      email: 'gotta@university.edu',
-      studentId: '240080025',
-      role: 'Student',
-      status: 'active',
-      joinDate: '2025-03-27',
-    },
-    {
-      id: '3',
-      name: 'SENTONGO EDRINE',
-      email: 'sentongo@university.edu',
-      studentId: '240081157',
-      role: 'Student',
-      status: 'active',
-      joinDate: '2025-03-27',
-    },
-    {
-      id: '4',
-      name: 'Wopa Hatim',
-      email: 'wopa@university.edu',
-      studentId: '240081245',
-      role: 'Student',
-      status: 'suspended',
-      joinDate: '2025-03-19',
-    },
-  ]);
+  const [users, setUsers] = useState([]);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Fetch users from backend
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await getUsers();
+        // Use paginated response: res.data.items
+        const mapped = ((res.data && res.data.items) || []).map(u => ({
+          id: u.user_id,
+          username: u.username,
+          first_name: u.first_name,
+          last_name: u.last_name,
+          email: u.email,
+          role: u.role,
+          created_at: u.created_at,
+        }));
+        setUsers(mapped);
+      } catch (error) {
+        setUsers([]);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   // Handle adding new user
   const handleAddUser = async (formData) => {
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const newUser = {
-        id: String(users.length + 1),
-        ...formData,
-        joinDate: new Date().toISOString().split('T')[0],
-      };
-
-      setUsers([...users, newUser]);
+      await createUser(formData);
+      // Refresh user list
+      const res = await getUsers();
+      const mapped = ((res.data && res.data.items) || []).map(u => ({
+        id: u.user_id,
+        username: u.username,
+        first_name: u.first_name,
+        last_name: u.last_name,
+        email: u.email,
+        role: u.role,
+        created_at: u.created_at,
+      }));
+      setUsers(mapped);
       setIsAddModalOpen(false);
-      // Show success toast here if you have a toast library
     } catch (error) {
-      console.error('Failed to add user:', error);
+      alert('Failed to add user.');
     } finally {
       setIsLoading(false);
     }
@@ -72,8 +61,22 @@ const UsersPageContent = () => {
 
   // Table columns
   const columns = [
-    { key: 'name', label: 'Name' },
-    { key: 'email', label: 'Email' },
+    {
+      key: 'username',
+      label: 'Username',
+    },
+    {
+      key: 'first_name',
+      label: 'First Name',
+    },
+    {
+      key: 'last_name',
+      label: 'Last Name',
+    },
+    {
+      key: 'email',
+      label: 'Email',
+    },
     {
       key: 'role',
       label: 'Role',
@@ -84,33 +87,61 @@ const UsersPageContent = () => {
       ),
     },
     {
-      key: 'status',
-      label: 'Status',
-      render: (value) => (
-        <span
-          className={`px-2 py-1 text-xs font-medium rounded-full ${
-            value === 'active'
-              ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
-              : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-          }`}
-        >
-          {value}
-        </span>
-      ),
+      key: 'created_at',
+      label: 'Joined',
+      render: (value) => value ? value.split('T')[0] : '',
     },
-    { key: 'joinDate', label: 'Joined' },
   ];
+
+  // Action handlers
+  const handleViewUser = async (row) => {
+    alert(`User info:\nUsername: ${row.username || row.email}\nEmail: ${row.email}`);
+  };
+
+  const handleEditUser = async (row) => {
+    const newFirstName = prompt('Edit first name:', row.first_name || '');
+    if (newFirstName && newFirstName !== row.first_name) {
+      try {
+        await updateUser(row.user_id || row.id, { first_name: newFirstName });
+        const res = await getUsers();
+        setUsers(res.users || []);
+      } catch (error) {
+        alert('Failed to update user.');
+      }
+    }
+  };
+
+  const handleDeleteUser = async (row) => {
+    if (window.confirm(`Are you sure you want to delete user ${row.username || row.email}?`)) {
+      try {
+        await deleteUser(row.user_id || row.id);
+        const res = await getUsers();
+        setUsers(res.users || []);
+      } catch (error) {
+        alert('Failed to delete user.');
+      }
+    }
+  };
 
   // Action buttons for each row
   const renderActions = (row) => (
     <>
-      <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-blue-600 dark:text-blue-400">
+      <button
+        className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-blue-600 dark:text-blue-400"
+        onClick={() => handleViewUser(row)}
+      >
         <Eye className="w-4 h-4" />
       </button>
-      <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-slate-600 dark:text-slate-400">
+      <button
+        className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-slate-600 dark:text-slate-400"
+        onClick={() => handleEditUser(row)}
+      >
         <Edit2 className="w-4 h-4" />
       </button>
-      <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-red-600 dark:text-red-400">
+      <button
+        className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-red-600 dark:text-red-400"
+        onClick={() => handleDeleteUser(row)}
+      >
         <Trash2 className="w-4 h-4" />
       </button>
     </>

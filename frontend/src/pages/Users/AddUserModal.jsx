@@ -4,10 +4,12 @@ import BaseModal from '../../components/Modals/BaseModal';
 
 const AddUserModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
-    studentId: '',
-    role: 'Student',
+    password: '',
+    first_name: '',
+    last_name: '',
+    role: 'member',
     status: 'active',
   });
 
@@ -15,21 +17,23 @@ const AddUserModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
 
   const validateForm = () => {
     const newErrors = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+    if (!formData.username.trim() || formData.username.length < 3) {
+      newErrors.username = 'Username must be at least 3 characters';
     }
-
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!formData.email.includes('@')) {
       newErrors.email = 'Invalid email format';
     }
-
-    if (!formData.studentId.trim()) {
-      newErrors.studentId = 'Student ID is required';
+    if (!formData.password || formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
     }
-
+    if (!formData.first_name.trim()) {
+      newErrors.first_name = 'First name is required';
+    }
+    if (!formData.last_name.trim()) {
+      newErrors.last_name = 'Last name is required';
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -43,10 +47,12 @@ const AddUserModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
 
     await onSubmit(formData);
     setFormData({
-      name: '',
+      username: '',
       email: '',
-      studentId: '',
-      role: 'Student',
+      password: '',
+      first_name: '',
+      last_name: '',
+      role: 'member',
       status: 'active',
     });
     setErrors({});
@@ -93,32 +99,27 @@ const AddUserModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
       }
     >
       <form className="space-y-4">
-        {/* Full Name */}
+        {/* Username */}
         <div>
-          <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">
-            Full Name *
-          </label>
+          <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">Username *</label>
           <input
             type="text"
-            name="name"
-            value={formData.name}
+            name="username"
+            value={formData.username}
             onChange={handleChange}
-            placeholder="Enter full name"
+            placeholder="Enter username"
             className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.name && (
+          {errors.username && (
             <div className="flex items-center gap-2 mt-2 text-red-600 dark:text-red-400 text-sm">
               <AlertCircle className="w-4 h-4" />
-              {errors.name}
+              {errors.username}
             </div>
           )}
         </div>
-
         {/* Email */}
         <div>
-          <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">
-            Email Address *
-          </label>
+          <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">Email Address *</label>
           <input
             type="email"
             name="email"
@@ -134,59 +135,59 @@ const AddUserModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
             </div>
           )}
         </div>
-
-        {/* Student ID */}
+        {/* Password */}
         <div>
-          <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">
-            Student ID *
-          </label>
+          <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">Password *</label>
           <input
-            type="text"
-            name="studentId"
-            value={formData.studentId}
+            type="password"
+            name="password"
+            value={formData.password}
             onChange={handleChange}
-            placeholder="e.g., 240080737"
+            placeholder="Enter password"
             className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.studentId && (
+          {errors.password && (
             <div className="flex items-center gap-2 mt-2 text-red-600 dark:text-red-400 text-sm">
               <AlertCircle className="w-4 h-4" />
-              {errors.studentId}
+              {errors.password}
             </div>
           )}
         </div>
-
-        {/* Role */}
+        {/* First Name */}
         <div>
-          <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">
-            Role
-          </label>
-          <select
-            name="role"
-            value={formData.role}
+          <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">First Name *</label>
+          <input
+            type="text"
+            name="first_name"
+            value={formData.first_name}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="Student">Student</option>
-            <option value="Librarian">Librarian</option>
-            <option value="Admin">Admin</option>
-          </select>
+            placeholder="Enter first name"
+            className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.first_name && (
+            <div className="flex items-center gap-2 mt-2 text-red-600 dark:text-red-400 text-sm">
+              <AlertCircle className="w-4 h-4" />
+              {errors.first_name}
+            </div>
+          )}
         </div>
-
-        {/* Status */}
+        {/* Last Name */}
         <div>
-          <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">
-            Status
-          </label>
-          <select
-            name="status"
-            value={formData.status}
+          <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">Last Name *</label>
+          <input
+            type="text"
+            name="last_name"
+            value={formData.last_name}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="active">Active</option>
-            <option value="suspended">Suspended</option>
-          </select>
+            placeholder="Enter last name"
+            className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.last_name && (
+            <div className="flex items-center gap-2 mt-2 text-red-600 dark:text-red-400 text-sm">
+              <AlertCircle className="w-4 h-4" />
+              {errors.last_name}
+            </div>
+          )}
         </div>
       </form>
     </BaseModal>

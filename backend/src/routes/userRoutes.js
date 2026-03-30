@@ -9,7 +9,7 @@ router.get('/profile', authenticate, UserController.getProfile);
 router.put('/profile', authenticate, UserController.updateProfile);
 
 // Admin Routes
-router.get('/', authenticate, authorize(ROLES.ADMIN), UserController.getAllUsers);
+router.get('/', authenticate, authorize(ROLES.ADMIN,ROLES.LIBRARIAN), UserController.getAllUsers);
 router.get('/:id', authenticate, UserController.getUser);
 
 module.exports = router;
