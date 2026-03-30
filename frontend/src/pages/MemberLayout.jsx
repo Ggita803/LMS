@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -18,6 +18,24 @@ const MemberLayout = ({ children }) => {
   const navigate = useNavigate();
   const { isDark } = useTheme();
   const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const accountBtnRef = useRef(null);
+  const accountDropdownRef = useRef(null);
+
+  useEffect(() => {
+    if (!isAccountOpen) return;
+    function handleClickOutside(event) {
+      if (
+        accountDropdownRef.current &&
+        !accountDropdownRef.current.contains(event.target) &&
+        accountBtnRef.current &&
+        !accountBtnRef.current.contains(event.target)
+      ) {
+        setIsAccountOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isAccountOpen]);
 
   const memberDetails = {
     studentId: user?.studentId || "240080737",
@@ -43,7 +61,8 @@ const MemberLayout = ({ children }) => {
             </button>
             
             <div className="relative">
-              <button 
+              <button
+                ref={accountBtnRef}
                 onClick={() => setIsAccountOpen(!isAccountOpen)}
                 className="flex items-center gap-3 p-1 pr-3 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
               >
@@ -56,6 +75,7 @@ const MemberLayout = ({ children }) => {
 
               {isAccountOpen && (
                 <div
+                  ref={accountDropdownRef}
                   className="absolute right-0 mt-2 w-96 bg-white dark:bg-slate-900 shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden animate-fade-in"
                   style={{ borderRadius: '8px' }}
                 >
