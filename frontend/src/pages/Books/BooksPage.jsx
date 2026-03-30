@@ -3,11 +3,43 @@ import { Plus, Edit2, Trash2, Eye } from 'lucide-react';
 import DataTable from '../../components/DataTable/DataTable';
 import AddBookModal from './AddBookModal';
 import MainLayout from '../MainLayout';
-import { getBooks, addBook } from '../../services/bookService';
+import { getBooks, addBook, deleteBook, updateBook } from '../../services/bookService';
+import BookDetailsModal from './BookDetailsModal';
+import ConfirmationModal from '../../components/ConfirmationModal';
 import { getCategories } from '../../services/categoryService';
 
 const BooksPageContent = () => {
+    // Delete handler
+    const handleDelete = async () => {
+      if (!deleteTarget) return;
+      setIsDeleting(true);
+      try {
+        await deleteBook(deleteTarget.id);
+        // Refresh books from backend
+        const booksRes = await getBooks();
+        const catMap = {};
+        categories.forEach(cat => { catMap[cat.category_id] = cat.category_name; });
+        const mappedBooks = booksRes.map(b => ({
+          id: b.book_id,
+          title: b.title,
+          isbn: b.isbn,
+          author: b.author,
+          category: b.category_name || catMap[b.category_id] || b.category_id,
+          copies: b.total_copies,
+          available: b.available_copies,
+          status: b.available_copies === 0 ? 'unavailable' : (b.available_copies < 2 ? 'low-stock' : 'available'),
+        }));
+        setBooks(mappedBooks);
+        setDeleteTarget(null);
+      } catch (error) {
+        alert('Failed to delete book.');
+      } finally {
+        setIsDeleting(false);
+      }
+    };
   const [books, setBooks] = useState([]);
+    const [deleteTarget, setDeleteTarget] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
   const [categories, setCategories] = useState([]);
   const [categoryMap, setCategoryMap] = useState({});
   // Fetch books and categories on mount
@@ -18,10 +50,8 @@ const BooksPageContent = () => {
           getBooks(),
           getCategories(),
         ]);
-        setCategories(categoriesRes);
-        // Build category_id -> name map
         const catMap = {};
-        categoriesRes.forEach(cat => { catMap[cat.category_id] = cat.name; });
+        categoriesRes.forEach(cat => { catMap[cat.category_id] = cat.category_name; });
         setCategoryMap(catMap);
         // Map backend book fields to frontend fields
         const mappedBooks = booksRes.map(b => ({
@@ -43,7 +73,10 @@ const BooksPageContent = () => {
   }, []);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editBook, setEditBook] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [viewBook, setViewBook] = useState(null);
 
   const handleAddBook = async (formData) => {
     setIsLoading(true);
@@ -136,17 +169,66 @@ const BooksPageContent = () => {
 
   const renderActions = (row) => (
     <>
-      <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-blue-600 dark:text-blue-400">
+      <button
+        className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-blue-600 dark:text-blue-400"
+        onClick={() => setViewBook(row)}
+      >
         <Eye className="w-4 h-4" />
       </button>
-      <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-slate-600 dark:text-slate-400">
+      <button
+        className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-slate-600 dark:text-slate-400"
+        onClick={() => {
+          setEditBook(row);
+          setIsEditModalOpen(true);
+        }}
+      >
         <Edit2 className="w-4 h-4" />
       </button>
-      <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-red-600 dark:text-red-400">
+      <button
+        className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-red-600 dark:text-red-400"
+        onClick={() => setDeleteTarget(row)}
+      >
         <Trash2 className="w-4 h-4" />
       </button>
     </>
   );
+  // Edit handler
+  const handleEditBook = async (formData) => {
+    setIsLoading(true);
+    try {
+      const payload = {
+        title: formData.title,
+        author: formData.author,
+        isbn: formData.isbn,
+        category_id: formData.category_id,
+        total_copies: formData.copies,
+        available_copies: formData.available,
+        description: formData.description,
+      };
+      await updateBook(editBook.id, payload);
+      // Refresh books from backend
+      const booksRes = await getBooks();
+      const catMap = {};
+      categories.forEach(cat => { catMap[cat.category_id] = cat.name; });
+      const mappedBooks = booksRes.map(b => ({
+        id: b.book_id,
+        title: b.title,
+        isbn: b.isbn,
+        author: b.author,
+        category: b.category_name || catMap[b.category_id] || b.category_id,
+        copies: b.total_copies,
+        available: b.available_copies,
+        status: b.available_copies === 0 ? 'unavailable' : (b.available_copies < 2 ? 'low-stock' : 'available'),
+      }));
+      setBooks(mappedBooks);
+      setIsEditModalOpen(false);
+      setEditBook(null);
+    } catch (error) {
+      alert('Failed to update book.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="p-8 space-y-6">
@@ -221,6 +303,33 @@ const BooksPageContent = () => {
         onSubmit={handleAddBook}
         isLoading={isLoading}
       />
+      {/* Edit Book Modal */}
+      <AddBookModal
+        isOpen={isEditModalOpen}
+        onClose={() => { setIsEditModalOpen(false); setEditBook(null); }}
+        onSubmit={handleEditBook}
+        isLoading={isLoading}
+        initialData={editBook}
+        isEdit
+      />
+      {/* View Book Modal */}
+      <BookDetailsModal
+        isOpen={!!viewBook}
+        onClose={() => setViewBook(null)}
+        book={viewBook}
+      />
+    {/* Delete Confirmation Modal */}
+    <ConfirmationModal
+      isOpen={!!deleteTarget}
+      title="Delete Book"
+      message={deleteTarget ? `Are you sure you want to delete "${deleteTarget.title}"? This action cannot be undone.` : ''}
+      confirmText="Delete"
+      cancelText="Cancel"
+      isDangerous
+      isLoading={isDeleting}
+      onCancel={() => setDeleteTarget(null)}
+      onConfirm={handleDelete}
+    />
     </div>
   );
 };
