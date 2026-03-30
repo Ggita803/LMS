@@ -4,6 +4,7 @@ import {
   Search, 
   Filter
 } from 'lucide-react';
+import LibraryHeroImage from '../assets/images/LibraryHeroImage.jpg';
 import MemberLayout from './MemberLayout';
 import BookCard from './BookCard';
 import Modal from '../components/Modal';
@@ -17,15 +18,28 @@ const MemberPortal = () => {
   const [selectedBook, setSelectedBook] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // Added createdAt field for sorting by 'Recently Added'
-  const books = [
-    { id: 1, title: 'Things Fall Apart', author: 'Chinua Achebe', category: 'Fiction', status: 'Available', fine_per_day: 500, createdAt: '2026-03-01' },
-    { id: 2, title: 'Clean Code', author: 'Robert C. Martin', category: 'Technology', status: 'Borrowed', fine_per_day: 1000, createdAt: '2026-03-20' },
-    { id: 3, title: 'Kintu', author: 'Jennifer Makumbi', category: 'Fiction', status: 'Available', fine_per_day: 500, createdAt: '2026-03-25' },
-    { id: 4, title: 'The River Between', author: 'Ngũgĩ wa Thiong\'o', category: 'Academic', status: 'Available', fine_per_day: 700, createdAt: '2026-03-10' },
-    { id: 5, title: 'Data Structures', author: 'N. Karumanchi', category: 'Technology', status: 'Available', fine_per_day: 800, createdAt: '2026-03-28' },
-    { id: 6, title: 'Tropical Fish', author: 'Doreen Baingana', category: 'Fiction', status: 'Available', fine_per_day: 500, createdAt: '2026-03-29' },
-  ];
+  // Loading and error state for async book fetch
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  React.useEffect(() => {
+    setLoading(true);
+    setError(null);
+    // Simulate async fetch
+    setTimeout(() => {
+      // Simulate error: setError('Failed to fetch books.'); setLoading(false); return;
+      setBooks([
+        { id: 1, title: 'Things Fall Apart', author: 'Chinua Achebe', category: 'Fiction', status: 'Available', fine_per_day: 500, createdAt: '2026-03-01' },
+        { id: 2, title: 'Clean Code', author: 'Robert C. Martin', category: 'Technology', status: 'Borrowed', fine_per_day: 1000, createdAt: '2026-03-20' },
+        { id: 3, title: 'Kintu', author: 'Jennifer Makumbi', category: 'Fiction', status: 'Available', fine_per_day: 500, createdAt: '2026-03-25' },
+        { id: 4, title: 'The River Between', author: 'Ngũgĩ wa Thiong\'o', category: 'Academic', status: 'Available', fine_per_day: 700, createdAt: '2026-03-10' },
+        { id: 5, title: 'Data Structures', author: 'N. Karumanchi', category: 'Technology', status: 'Available', fine_per_day: 800, createdAt: '2026-03-28' },
+        { id: 6, title: 'Tropical Fish', author: 'Doreen Baingana', category: 'Fiction', status: 'Available', fine_per_day: 500, createdAt: '2026-03-29' },
+      ]);
+      setLoading(false);
+    }, 1200);
+  }, []);
 
   // Enhanced filter logic for 'Available' and 'Recently Added'
   // Pagination state
@@ -62,15 +76,15 @@ const MemberPortal = () => {
   return (
     <MemberLayout>
       {/* Hero Section with Search */}
-      <div className="relative h-[500px] flex items-center justify-center overflow-hidden -mt-16">
+      <div className="relative h-[600px] flex items-center justify-center overflow-hidden -mt-16">
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
           <motion.img
             initial={{ scale: 1.1 }}
             animate={{ scale: 1 }}
             transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
-            src="https://images.unsplash.com/photo-1481627564523-4a7c3994ef24?q=80&w=2070&auto=format&fit=crop" 
-            alt="Library" 
+            src={LibraryHeroImage}
+            alt="Library Hero"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-slate-900/80 via-slate-900/60 to-slate-50 dark:to-slate-950 backdrop-blur-[1px]"></div>
@@ -180,30 +194,47 @@ const MemberPortal = () => {
           </div>
         </div>
 
-        <motion.div 
-          layoutId="book-grid"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          <AnimatePresence mode="popLayout">
-            {paginatedBooks.map(book => (
-              <motion.div
-                key={book.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.2 }}
-                onClick={() => {
-                  setSelectedBook(book);
-                  setShowModal(true);
-                }}
-                className="cursor-pointer"
-              >
-                <BookCard book={book} />
-              </motion.div>
+        {/* Loading/Error/Skeleton States */}
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="animate-pulse bg-slate-100 dark:bg-slate-800 rounded-xl h-64 w-full" />
             ))}
-          </AnimatePresence>
-        </motion.div>
+          </div>
+        ) : error ? (
+          <div className="py-24 text-center space-y-4 bg-white dark:bg-slate-900 rounded-3xl border-2 border-dashed border-rose-200 dark:border-rose-800 shadow-inner">
+            <div className="w-20 h-20 bg-rose-50 dark:bg-rose-800 rounded-full flex items-center justify-center mx-auto">
+              <span className="text-rose-400 text-4xl">!</span>
+            </div>
+            <h3 className="text-xl font-bold text-rose-700 dark:text-rose-300">{error}</h3>
+            <button onClick={() => window.location.reload()} className="px-6 py-2 rounded-full font-bold text-xs bg-sky-600 text-white hover:bg-sky-700 transition-all mt-4">Retry</button>
+          </div>
+        ) : (
+          <motion.div 
+            layoutId="book-grid"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            <AnimatePresence mode="popLayout">
+              {paginatedBooks.map(book => (
+                <motion.div
+                  key={book.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => {
+                    setSelectedBook(book);
+                    setShowModal(true);
+                  }}
+                  className="cursor-pointer"
+                >
+                  <BookCard book={book} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
 
         {/* Book Details Modal */}
         <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
