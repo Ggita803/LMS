@@ -173,7 +173,7 @@ const AddBookModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
             className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 bg-white text-slate-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
           >
             {categories.map((cat) => (
-              <option key={cat.category_id} value={cat.category_id}>{cat.name}</option>
+              <option key={cat.category_id} value={cat.category_id}>{cat.category_name}</option>
             ))}
           </select>
           {errors.category_id && (
