@@ -10,13 +10,15 @@ import {
   Book, 
   Settings, 
   History, 
-  LogOut 
+  LogOut, 
+  Sun, 
+  Moon 
 } from 'lucide-react';
 
 const MemberLayout = ({ children }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const { isDark } = useTheme();
+  const { isDark, toggleTheme } = useTheme();
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const accountBtnRef = useRef(null);
   const accountDropdownRef = useRef(null);
@@ -55,6 +57,17 @@ const MemberLayout = ({ children }) => {
           </Link>
 
           <div className="flex items-center gap-4">
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              aria-label="Toggle theme"
+            >
+              {isDark ? (
+                <Sun className="w-5 h-5 text-amber-500" />
+              ) : (
+                <Moon className="w-5 h-5 text-sky-600" />
+              )}
+            </button>
             <button className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full relative">
               <Bell className="w-5 h-5" />
               <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
