@@ -2,8 +2,10 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+const ProtectedRoute = ({ children, roles }) => {
+  const { isAuthenticated, loading, user } = useAuth();
+  // Debug logging for troubleshooting
+  console.log('[ProtectedRoute] user:', user, 'roles:', roles, 'isAuthenticated:', isAuthenticated, 'loading:', loading);
 
   if (loading) {
     return (
@@ -17,6 +19,21 @@ const ProtectedRoute = ({ children }) => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  // Robustly extract role from user object (handles nested user.user)
+  let actualRole = null;
+  if (user) {
+    if (user.role) {
+      actualRole = user.role;
+    } else if (user.user?.role) {
+      actualRole = user.user.role;
+    } else if (user.user?.user?.role) {
+      actualRole = user.user.user.role;
+    }
+  }
+  if (roles && (!actualRole || !roles.includes(actualRole))) {
+    return <Navigate to="/unauthorized" replace />;
   }
 
   return children;

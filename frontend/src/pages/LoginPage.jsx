@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -9,7 +9,8 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, user } = useAuth();
+  const [justLoggedIn, setJustLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -18,13 +19,36 @@ const LoginPage = () => {
     try {
       await login(email, password);
       toast.success('Welcome back!');
-      navigate('/dashboard');
+      setJustLoggedIn(true);
     } catch (error) {
       toast.error(error.message || 'Login failed');
     } finally {
       setLoading(false);
     }
   };
+
+  // Redirect only after user context is updated post-login
+  useEffect(() => {
+    if (justLoggedIn && user) {
+      // Robustly extract role
+      let role = null;
+      if (user.role) {
+        role = user.role;
+      } else if (user.user?.role) {
+        role = user.user.role;
+      } else if (user.user?.user?.role) {
+        role = user.user.user.role;
+      }
+      if (role === 'librarian') {
+        navigate('/librarian');
+      } else if (role === 'member') {
+        navigate('/member-portal');
+      } else {
+        navigate('/dashboard');
+      }
+      setJustLoggedIn(false);
+    }
+  }, [justLoggedIn, user, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">

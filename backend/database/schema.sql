@@ -96,3 +96,12 @@ CREATE TABLE reservations (
   INDEX idx_book_id (book_id),
   INDEX idx_status (status)
 );
+
+-- Token Blacklist Table (for logout functionality)
+CREATE TABLE token_blacklist (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  token VARCHAR(512) NOT NULL,
+  user_id INT,
+  blacklisted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_token (token)
+);

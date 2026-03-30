@@ -16,7 +16,7 @@ const comparePassword = async (password, hash) => {
 // Generate Token
 const generateToken = (userId, email, role) => {
   return jwt.sign(
-    { userId, email, role },
+    { user_id: userId, email, role },
     config.JWT.SECRET,
     { expiresIn: config.JWT.EXPIRE }
   );

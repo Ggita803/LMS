@@ -26,6 +26,7 @@ import NotificationsPage from './pages/NotificationsPage';
 import FAQPage from './pages/FAQPage';
 import BorrowingHistoryPage from './pages/BorrowingHistoryPage';
 import NotFoundPage from './pages/NotFoundPage';
+import UnauthorizedPage from './pages/UnauthorizedPage';
 import WishlistPage from './pages/WishlistPage';
 import AdvancedSearchPage from './pages/AdvancedSearchPage';
 import ReservationPage from './pages/ReservationPage';
@@ -95,19 +96,38 @@ function App() {
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/verify-email" element={<VerifyEmailPage />} />
 
-            {/* Protected Routes - Now Public */}
-            <Route path="/dashboard" element={<LibrarianDashboard/>} />
-            <Route path="/librarian" element={<LibrarianDashboard />} />
-            <Route path="/content-management" element={<LibrarianDashboard />} />
-            <Route path="/books" element={<BrowseBooks />} />
-            <Route path="/books/:id" element={<BookDetails />} />
-            <Route path="/my-library" element={<MyLibrary />} />
-            
-            {/* Librarian Only Routes - Now Public */}
-            <Route path="/manage-books" element={<ManageBooks />} />
-            <Route path="/manage-users" element={<UsersPage />} />
-            <Route path="/manage-categories" element={<ManageCategories />} />
-            <Route path="/reports" element={<ReportsPage />} />
+            {/* Member: Only member-portal. Librarian: Only dashboard. */}
+            <Route path="/dashboard" element={
+              <ProtectedRoute roles={['librarian']}>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/member-portal" element={
+              <ProtectedRoute roles={['member']}>
+                <MemberPortal />
+              </ProtectedRoute>
+            } />
+
+            {/* Librarian Only: All other sensitive routes */}
+            <Route path="/librarian" element={<ProtectedRoute roles={['librarian']}><LibrarianDashboard /></ProtectedRoute>} />
+            <Route path="/content-management" element={<ProtectedRoute roles={['librarian']}><LibrarianDashboard /></ProtectedRoute>} />
+            <Route path="/manage-books" element={<ProtectedRoute roles={['librarian']}><ManageBooks /></ProtectedRoute>} />
+            <Route path="/manage-users" element={<ProtectedRoute roles={['librarian']}><UsersPage /></ProtectedRoute>} />
+            <Route path="/manage-categories" element={<ProtectedRoute roles={['librarian']}><ManageCategories /></ProtectedRoute>} />
+            <Route path="/reports" element={<ProtectedRoute roles={['librarian']}><ReportsPage /></ProtectedRoute>} />
+            <Route path="/books" element={<ProtectedRoute roles={['librarian']}><BrowseBooks /></ProtectedRoute>} />
+            <Route path="/books/:id" element={<ProtectedRoute roles={['librarian']}><BookDetails /></ProtectedRoute>} />
+            <Route path="/my-library" element={<ProtectedRoute roles={['librarian']}><MyLibrary /></ProtectedRoute>} />
+            <Route path="/books-library" element={<ProtectedRoute roles={['librarian']}><BooksPage /></ProtectedRoute>} />
+            <Route path="/add-book" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">➕ Add New Book</h1><p className="mt-4 text-slate-600">Add new book form (Coming Soon)</p></div></ProtectedRoute>} />
+            <Route path="/edit-books" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">✏️ Edit Books</h1><p className="mt-4 text-slate-600">Edit books page (Coming Soon)</p></div></ProtectedRoute>} />
+            <Route path="/search-books" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🔍 Search Books</h1><p className="mt-4 text-slate-600">Advanced book search (Coming Soon)</p></div></ProtectedRoute>} />
+            <Route path="/book-catalog" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📖 Book Catalog</h1><p className="mt-4 text-slate-600">Complete catalog view (Coming Soon)</p></div></ProtectedRoute>} />
+            <Route path="/book-duplicates" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📋 Book Duplicates</h1><p className="mt-4 text-slate-600">Find duplicate entries (Coming Soon)</p></div></ProtectedRoute>} />
+            <Route path="/bulk-import" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📥 Bulk Import Books</h1><p className="mt-4 text-slate-600">Import from CSV/Excel (Coming Soon)</p></div></ProtectedRoute>} />
+            <Route path="/book-collections" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📦 Book Collections</h1><p className="mt-4 text-slate-600">Manage book collections (Coming Soon)</p></div></ProtectedRoute>} />
+            <Route path="/isbn-management" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🏷️ ISBN Management</h1><p className="mt-4 text-slate-600">Manage ISBN entries (Coming Soon)</p></div></ProtectedRoute>} />
+            <Route path="/pending-approvals" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">✅ Pending Approvals</h1><p className="mt-4 text-slate-600">Approve new submissions (Coming Soon)</p></div></ProtectedRoute>} />
             
             {/* New Book Management Routes */}
             <Route path="/books-library" element={<BooksPage />} />
@@ -187,6 +207,8 @@ function App() {
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
 
+            {/* Unauthorized Route */}
+            <Route path="/unauthorized" element={<UnauthorizedPage />} />
             {/* 404 Fallback */}
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
