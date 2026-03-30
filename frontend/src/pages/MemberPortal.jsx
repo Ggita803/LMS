@@ -23,6 +23,10 @@ const MemberPortal = () => {
   ];
 
   // Enhanced filter logic for 'Available' and 'Recently Added'
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const booksPerPage = 6;
+
   let filteredBooks = books.filter(b =>
     (selectedCategory === 'All' || b.category === selectedCategory) &&
     (b.title.toLowerCase().includes(searchQuery.toLowerCase()) || b.author.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -43,6 +47,12 @@ const MemberPortal = () => {
       return 0;
     });
   }
+
+  // Pagination logic (skip for 'Recently Added' which is always 5 or less)
+  const totalPages = activeFilter === 'Recently Added' ? 1 : Math.ceil(filteredBooks.length / booksPerPage);
+  const paginatedBooks = activeFilter === 'Recently Added'
+    ? filteredBooks
+    : filteredBooks.slice((currentPage - 1) * booksPerPage, currentPage * booksPerPage);
 
   return (
     <MemberLayout>
@@ -170,7 +180,7 @@ const MemberPortal = () => {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           <AnimatePresence mode="popLayout">
-            {filteredBooks.map(book => (
+            {paginatedBooks.map(book => (
               <motion.div
                 key={book.id}
                 layout
@@ -184,6 +194,39 @@ const MemberPortal = () => {
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-12 gap-2">
+            <button
+              className="px-4 py-2 rounded-full font-bold text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-50"
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+            >
+              Prev
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i + 1}
+                className={`px-4 py-2 rounded-full font-bold text-xs border transition-all ${
+                  currentPage === i + 1
+                    ? 'bg-sky-600 border-sky-600 text-white'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-sky-600 hover:text-sky-600'
+                }`}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              className="px-4 py-2 rounded-full font-bold text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-50"
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        )}
 
         {filteredBooks.length === 0 && (
           <div className="py-24 text-center space-y-4 bg-white dark:bg-slate-900 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800 shadow-inner">
