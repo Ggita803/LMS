@@ -12,25 +12,37 @@ const MemberPortal = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [activeFilter, setActiveCategory] = useState('All');
 
+  // Added createdAt field for sorting by 'Recently Added'
   const books = [
-    { id: 1, title: 'Things Fall Apart', author: 'Chinua Achebe', category: 'Fiction', status: 'Available', fine_per_day: 500 },
-    { id: 2, title: 'Clean Code', author: 'Robert C. Martin', category: 'Technology', status: 'Borrowed', fine_per_day: 1000 },
-    { id: 3, title: 'Kintu', author: 'Jennifer Makumbi', category: 'Fiction', status: 'Available', fine_per_day: 500 },
-    { id: 4, title: 'The River Between', author: 'Ngũgĩ wa Thiong\'o', category: 'Academic', status: 'Available', fine_per_day: 700 },
-    { id: 5, title: 'Data Structures', author: 'N. Karumanchi', category: 'Technology', status: 'Available', fine_per_day: 800 },
-    { id: 6, title: 'Tropical Fish', author: 'Doreen Baingana', category: 'Fiction', status: 'Available', fine_per_day: 500 },
+    { id: 1, title: 'Things Fall Apart', author: 'Chinua Achebe', category: 'Fiction', status: 'Available', fine_per_day: 500, createdAt: '2026-03-01' },
+    { id: 2, title: 'Clean Code', author: 'Robert C. Martin', category: 'Technology', status: 'Borrowed', fine_per_day: 1000, createdAt: '2026-03-20' },
+    { id: 3, title: 'Kintu', author: 'Jennifer Makumbi', category: 'Fiction', status: 'Available', fine_per_day: 500, createdAt: '2026-03-25' },
+    { id: 4, title: 'The River Between', author: 'Ngũgĩ wa Thiong\'o', category: 'Academic', status: 'Available', fine_per_day: 700, createdAt: '2026-03-10' },
+    { id: 5, title: 'Data Structures', author: 'N. Karumanchi', category: 'Technology', status: 'Available', fine_per_day: 800, createdAt: '2026-03-28' },
+    { id: 6, title: 'Tropical Fish', author: 'Doreen Baingana', category: 'Fiction', status: 'Available', fine_per_day: 500, createdAt: '2026-03-29' },
   ];
 
-  const filteredBooks = books
-    .filter(b => 
-      (selectedCategory === 'All' || b.category === selectedCategory) &&
-      (b.title.toLowerCase().includes(searchQuery.toLowerCase()) || b.author.toLowerCase().includes(searchQuery.toLowerCase()))
-    )
-    .sort((a, b) => {
+  // Enhanced filter logic for 'Available' and 'Recently Added'
+  let filteredBooks = books.filter(b =>
+    (selectedCategory === 'All' || b.category === selectedCategory) &&
+    (b.title.toLowerCase().includes(searchQuery.toLowerCase()) || b.author.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  if (activeFilter === 'Available') {
+    filteredBooks = filteredBooks.filter(b => b.status === 'Available');
+  } else if (activeFilter === 'Recently Added') {
+    filteredBooks = filteredBooks
+      .slice()
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 5); // Show 5 most recent books
+  } else {
+    // Default: sort so available books come first
+    filteredBooks = filteredBooks.sort((a, b) => {
       if (a.status === 'Available' && b.status !== 'Available') return -1;
       if (a.status !== 'Available' && b.status === 'Available') return 1;
       return 0;
     });
+  }
 
   return (
     <MemberLayout>
