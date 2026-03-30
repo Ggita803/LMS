@@ -34,11 +34,10 @@ const Navbar = ({ isDark, toggleTheme, isMenuOpen, setIsMenuOpen }) => (
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
-          {['features', 'about', 'pricing', 'contact'].map((item) => (
-            <a key={item} href={`#${item}`} className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 transition-smooth capitalize">
-              {item}
-            </a>
-          ))}
+          <a href="#features" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 transition-smooth capitalize">features</a>
+          <Link to="/about" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 transition-smooth capitalize">about</Link>
+          <a href="#pricing" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 transition-smooth capitalize">pricing</a>
+          <a href="#contact" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 transition-smooth capitalize">contact</a>
         </div>
 
         <div className="flex items-center gap-4">
@@ -55,9 +54,9 @@ const Navbar = ({ isDark, toggleTheme, isMenuOpen, setIsMenuOpen }) => (
     </div>
     {isMenuOpen && (
       <div className="md:hidden border-t border-slate-200 dark:border-slate-800 p-4 space-y-3">
-        {['features', 'about', 'pricing'].map((item) => (
-          <a key={item} href={`#${item}`} className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 capitalize">{item}</a>
-        ))}
+        <a href="#features" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 capitalize">features</a>
+        <Link to="/about" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 capitalize">about</Link>
+        <a href="#pricing" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 capitalize">pricing</a>
         <Link to="/login" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600">Login</Link>
         <Link to="/register" className="block w-full px-4 py-2 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-lg text-center">Get Started</Link>
       </div>

@@ -54,10 +54,46 @@ const AboutPage = () => {
   ];
 
   const team = [
-    { name: 'Sarah Johnson', role: 'Founder & Director', emoji: '👩‍💼' },
-    { name: 'Michael Chen', role: 'Head Librarian', emoji: '👨‍💼' },
-    { name: 'Emily Rodriguez', role: 'Tech Lead', emoji: '👩‍💻' },
-    { name: 'James Smith', role: 'Community Manager', emoji: '👨‍💼' },
+    {
+      name: 'Sarah Johnson',
+      role: 'Founder & Director',
+      emoji: '👩‍💼',
+      photo: 'https://randomuser.me/api/portraits/women/68.jpg',
+      bio: 'Visionary leader with a passion for literacy and community empowerment.',
+      linkedin: 'https://linkedin.com/in/sarahjohnson',
+      twitter: 'https://twitter.com/sarahjohnson',
+      github: 'https://github.com/sarahjohnson',
+    },
+    {
+      name: 'Michael Chen',
+      role: 'Head Librarian',
+      emoji: '👨‍💼',
+      photo: 'https://randomuser.me/api/portraits/men/65.jpg',
+      bio: 'Expert in library science, dedicated to curating diverse collections.',
+      linkedin: 'https://linkedin.com/in/michaelchen',
+      twitter: 'https://twitter.com/michaelchen',
+      github: 'https://github.com/michaelchen',
+    },
+    {
+      name: 'Emily Rodriguez',
+      role: 'Tech Lead',
+      emoji: '👩‍💻',
+      photo: 'https://randomuser.me/api/portraits/women/65.jpg',
+      bio: 'Full-stack developer building seamless digital library experiences.',
+      linkedin: 'https://linkedin.com/in/emilyrodriguez',
+      twitter: 'https://twitter.com/emilyrodriguez',
+      github: 'https://github.com/emilyrodriguez',
+    },
+    {
+      name: 'James Smith',
+      role: 'Community Manager',
+      emoji: '👨‍💼',
+      photo: 'https://randomuser.me/api/portraits/men/68.jpg',
+      bio: 'Connecting readers and organizing engaging library events.',
+      linkedin: 'https://linkedin.com/in/jamessmith',
+      twitter: 'https://twitter.com/jamessmith',
+      github: 'https://github.com/jamessmith',
+    },
   ];
 
   const stats = [
@@ -82,11 +118,10 @@ const AboutPage = () => {
             <span className="text-xl font-bold bg-gradient-to-r from-sky-600 to-blue-500 bg-clip-text text-transparent">LMS</span>
           </Link>
           <div className="hidden md:flex items-center gap-8">
-            {['features', 'about', 'pricing', 'contact'].map((item) => (
-              <a key={item} href={`#${item}`} className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 transition-smooth capitalize">
-                {item}
-              </a>
-            ))}
+            <a href="#features" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 transition-smooth capitalize">features</a>
+            <Link to="/about" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 transition-smooth capitalize">about</Link>
+            <a href="#pricing" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 transition-smooth capitalize">pricing</a>
+            <a href="#contact" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 transition-smooth capitalize">contact</a>
           </div>
           <div className="flex items-center gap-4">
             <button onClick={toggleTheme} className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-smooth">
@@ -102,9 +137,9 @@ const AboutPage = () => {
       </div>
       {isMenuOpen && (
         <div className="md:hidden border-t border-slate-200 dark:border-slate-800 p-4 space-y-3">
-          {['features', 'about', 'pricing'].map((item) => (
-            <a key={item} href={`#${item}`} className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 capitalize">{item}</a>
-          ))}
+          <a href="#features" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 capitalize">features</a>
+          <Link to="/about" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 capitalize">about</Link>
+          <a href="#pricing" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 capitalize">pricing</a>
           <Link to="/login" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600">Login</Link>
           <Link to="/register" className="block w-full px-4 py-2 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-lg text-center">Get Started</Link>
         </div>
@@ -239,14 +274,27 @@ const AboutPage = () => {
             <h2 className="text-2xl font-bold mb-6">Meet Our Team</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {team.map((member, idx) => (
-                <div key={idx} className="card text-center p-6 flex flex-col items-center group hover:shadow-xl transition-smooth">
-                  <div className="text-6xl mb-3 animate-bounce-slow group-hover:scale-110 transition-transform">{member.emoji}</div>
+                <div
+                  key={idx}
+                  className="card text-center p-6 flex flex-col items-center group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800"
+                >
+                  <div className="relative mb-3">
+                    <img
+                      src={member.photo}
+                      alt={member.name}
+                      className="w-20 h-20 rounded-full border-4 border-sky-200 dark:border-sky-700 object-cover shadow-lg group-hover:scale-105 transition-transform"
+                    />
+                    <span className="absolute -bottom-2 -right-2 text-2xl select-none animate-bounce-slow group-hover:scale-110 transition-transform">
+                      {member.emoji}
+                    </span>
+                  </div>
                   <h3 className="font-bold text-lg mb-1 text-slate-900 dark:text-white">{member.name}</h3>
-                  <p className="text-xs text-muted mb-2">{member.role}</p>
+                  <p className="text-xs text-muted mb-1">{member.role}</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mb-2 min-h-[40px]">{member.bio}</p>
                   <div className="flex gap-3 justify-center mt-2">
-                    <a href="#" className="hover:text-sky-600" aria-label="LinkedIn"><Linkedin className="w-4 h-4" /></a>
-                    <a href="#" className="hover:text-sky-600" aria-label="Twitter"><Twitter className="w-4 h-4" /></a>
-                    <a href="#" className="hover:text-sky-600" aria-label="GitHub"><Github className="w-4 h-4" /></a>
+                    <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-sky-600" aria-label="LinkedIn"><Linkedin className="w-4 h-4" /></a>
+                    <a href={member.twitter} target="_blank" rel="noopener noreferrer" className="hover:text-sky-600" aria-label="Twitter"><Twitter className="w-4 h-4" /></a>
+                    <a href={member.github} target="_blank" rel="noopener noreferrer" className="hover:text-sky-600" aria-label="GitHub"><Github className="w-4 h-4" /></a>
                   </div>
                 </div>
               ))}
