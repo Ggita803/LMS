@@ -105,16 +105,19 @@ const ManageCategories = () => {
           </div>
         </div>
 
-        {/* Category Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-
-          <AnimatePresence>
-            {filtered.length === 0 ? (
-              <div className="col-span-full text-center text-slate-400 py-12">
-                No categories found.
-              </div>
-            ) : (
-              filtered.map((cat) => (
+        {/* Category Grid or Empty State */}
+        {categories.length === 0 ? (
+          <div className="text-center text-slate-400 py-12">
+            No categories found.
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center text-slate-400 py-12">
+            No categories match your search.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <AnimatePresence>
+              {filtered.map((cat) => (
                 <motion.div 
                   layout
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -150,24 +153,23 @@ const ManageCategories = () => {
                     </button>
                   </div>
                 </motion.div>
-              ))
-            )}
-            <CategoryModal
-              open={modalOpen}
-              onClose={() => setModalOpen(false)}
-              onSubmit={handleAddCategory}
-              loading={loading}
-            />
-          </AnimatePresence>
-
-          {/* Quick Add Placeholder */}
-          <button className="card border-2 border-dashed border-slate-200 dark:border-slate-800 bg-transparent flex flex-col items-center justify-center gap-3 group hover:border-sky-400 transition-smooth min-h-[240px]">
-            <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-sky-50 transition-smooth">
-              <Plus className="w-6 h-6 text-slate-400 group-hover:text-sky-600" />
-            </div>
-            <p className="text-sm font-bold text-slate-400 group-hover:text-sky-600">NEW GENRE</p>
-          </button>
-        </div>
+              ))}
+              <CategoryModal
+                open={modalOpen}
+                onClose={() => setModalOpen(false)}
+                onSubmit={handleAddCategory}
+                loading={loading}
+              />
+            </AnimatePresence>
+            {/* Quick Add Placeholder */}
+            <button className="card border-2 border-dashed border-slate-200 dark:border-slate-800 bg-transparent flex flex-col items-center justify-center gap-3 group hover:border-sky-400 transition-smooth min-h-[240px]">
+              <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-sky-50 transition-smooth">
+                <Plus className="w-6 h-6 text-slate-400 group-hover:text-sky-600" />
+              </div>
+              <p className="text-sm font-bold text-slate-400 group-hover:text-sky-600">NEW GENRE</p>
+            </button>
+          </div>
+        )}
       </div>
     </MainLayout>
   );
