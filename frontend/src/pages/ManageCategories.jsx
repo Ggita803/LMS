@@ -17,14 +17,16 @@ const ManageCategories = () => {
     const load = async () => {
       try {
         const data = await fetchCategories();
-        // Map backend fields to frontend
+        // Debug log
+        console.log('Fetched categories data:', data);
+        const cats = data.items || data.categories || [];
         setCategories(
-          data.categories.map((cat) => ({
+          cats.map((cat) => ({
             id: cat.category_id,
             name: cat.category_name,
             description: cat.description,
             count: cat.book_count,
-            color: 'bg-sky-100 text-sky-600', // Optionally color-code by id or name
+            color: 'bg-sky-100 text-sky-600',
           }))
         );
       } catch (err) {
@@ -52,8 +54,9 @@ const ManageCategories = () => {
       setModalOpen(false);
       // Refetch categories
       const data = await fetchCategories();
+      const cats = data.items || data.categories || [];
       setCategories(
-        data.categories.map((cat) => ({
+        cats.map((cat) => ({
           id: cat.category_id,
           name: cat.category_name,
           description: cat.description,
@@ -104,50 +107,57 @@ const ManageCategories = () => {
 
         {/* Category Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
           <AnimatePresence>
-            {filtered.map((cat) => (
-              <motion.div 
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                key={cat.id} 
-                className="card bg-white dark:bg-slate-900 border-none shadow-subtle group hover:shadow-xl transition-smooth"
-              >
-                <div className="flex items-start justify-between mb-6">
-                  <div className={`p-3 rounded-2xl ${cat.color}`}>
-                    <Tag className="w-6 h-6" />
+            {filtered.length === 0 ? (
+              <div className="col-span-full text-center text-slate-400 py-12">
+                No categories found.
+              </div>
+            ) : (
+              filtered.map((cat) => (
+                <motion.div 
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  key={cat.id} 
+                  className="card bg-white dark:bg-slate-900 border-none shadow-subtle group hover:shadow-xl transition-smooth"
+                >
+                  <div className="flex items-start justify-between mb-6">
+                    <div className={`p-3 rounded-2xl ${cat.color}`}>
+                      <Tag className="w-6 h-6" />
+                    </div>
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-smooth">
+                      <button className="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-sky-600">
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(cat.id)}
+                        className="p-2 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg text-slate-400 hover:text-rose-600"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-smooth">
-                    <button className="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-sky-600">
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(cat.id)}
-                      className="p-2 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg text-slate-400 hover:text-rose-600"
-                    >
-                      <Trash2 className="w-4 h-4" />
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1">{cat.name}</h3>
+                  <div className="flex items-center gap-2 text-muted">
+                    <BookOpen className="w-4 h-4" />
+                    <span className="text-sm font-medium">{cat.count} Books in Stock</span>
+                  </div>
+                  <div className="mt-6 pt-6 border-t border-slate-50 dark:border-slate-800">
+                    <button className="w-full py-2 text-xs font-bold text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-900/30 rounded-lg transition-smooth">
+                      VIEW ALL BOOKS
                     </button>
                   </div>
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1">{cat.name}</h3>
-                <div className="flex items-center gap-2 text-muted">
-                  <BookOpen className="w-4 h-4" />
-                  <span className="text-sm font-medium">{cat.count} Books in Stock</span>
-                </div>
-                <div className="mt-6 pt-6 border-t border-slate-50 dark:border-slate-800">
-                  <button className="w-full py-2 text-xs font-bold text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-900/30 rounded-lg transition-smooth">
-                    VIEW ALL BOOKS
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-                <CategoryModal
-                  open={modalOpen}
-                  onClose={() => setModalOpen(false)}
-                  onSubmit={handleAddCategory}
-                  loading={loading}
-                />
+                </motion.div>
+              ))
+            )}
+            <CategoryModal
+              open={modalOpen}
+              onClose={() => setModalOpen(false)}
+              onSubmit={handleAddCategory}
+              loading={loading}
+            />
           </AnimatePresence>
 
           {/* Quick Add Placeholder */}
