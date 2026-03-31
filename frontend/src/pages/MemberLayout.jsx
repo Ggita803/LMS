@@ -42,8 +42,8 @@ const MemberLayout = ({ children }) => {
   // Deeply normalize user extraction to support varying backend responses
   const currentUser = user?.user?.user || user?.user || user;
   const memberDetails = {
-    studentId: currentUser?.studentId || "240080737",
-    program: currentUser?.program || "Bachelor of Science in Computer Science",
+    studentId: currentUser?.student_id || currentUser?.id || "N/A",
+    program: currentUser?.program || "Unassigned Program",
   };
 
   return (
@@ -118,13 +118,15 @@ const MemberLayout = ({ children }) => {
                         <p className="text-[10px] font-bold text-slate-400 uppercase">
                           Loans
                         </p>
-                        <p className="text-lg font-bold text-sky-600">3</p>
+                        <p className="text-lg font-bold text-sky-600">
+                          {currentUser?.active_loans_count || 0}
+                        </p>
                       </div>
                       <div className="p-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 rounded-xl">
                         <p className="text-[10px] font-bold text-slate-400 uppercase">
                           Fines
                         </p>
-                        <p className="text-lg font-bold text-rose-600">2.5k</p>
+                        <p className="text-lg font-bold text-rose-600">{currentUser?.total_fines ? `Shs ${currentUser.total_fines}` : '0'}</p>
                       </div>
                     </div>
 

@@ -112,79 +112,13 @@ function App() {
             <Route path="/librarian" element={<ProtectedRoute roles={['librarian']}><LibrarianDashboard /></ProtectedRoute>} />
             <Route path="/content-management" element={<ProtectedRoute roles={['librarian']}><LibrarianDashboard /></ProtectedRoute>} />
             <Route path="/manage-books" element={<ProtectedRoute roles={['librarian']}><ManageBooks /></ProtectedRoute>} />
-            <Route path="/manage-users" element={<ProtectedRoute roles={['librarian']}><UsersPage /></ProtectedRoute>} />
+            <Route path="/manage-users" element={<ProtectedRoute roles={['librarian', 'member']}><UsersPage /></ProtectedRoute>} />
             <Route path="/manage-categories" element={<ProtectedRoute roles={['librarian']}><ManageCategories /></ProtectedRoute>} />
             <Route path="/reports" element={<ProtectedRoute roles={['librarian']}><ReportsPage /></ProtectedRoute>} />
             <Route path="/books" element={<ProtectedRoute roles={['librarian', 'member']}><BrowseBooks /></ProtectedRoute>} />
             <Route path="/books/:id" element={<ProtectedRoute roles={['librarian', 'member']}><BookDetails /></ProtectedRoute>} />
             <Route path="/my-library" element={<ProtectedRoute roles={['librarian', 'member']}><MyLibrary /></ProtectedRoute>} />
             <Route path="/books-library" element={<ProtectedRoute roles={['librarian']}><BooksPage /></ProtectedRoute>} />
-            <Route path="/add-book" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">➕ Add New Book</h1><p className="mt-4 text-slate-600">Add new book form (Coming Soon)</p></div></ProtectedRoute>} />
-            <Route path="/edit-books" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">✏️ Edit Books</h1><p className="mt-4 text-slate-600">Edit books page (Coming Soon)</p></div></ProtectedRoute>} />
-            <Route path="/search-books" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🔍 Search Books</h1><p className="mt-4 text-slate-600">Advanced book search (Coming Soon)</p></div></ProtectedRoute>} />
-            <Route path="/book-catalog" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📖 Book Catalog</h1><p className="mt-4 text-slate-600">Complete catalog view (Coming Soon)</p></div></ProtectedRoute>} />
-            <Route path="/book-duplicates" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📋 Book Duplicates</h1><p className="mt-4 text-slate-600">Find duplicate entries (Coming Soon)</p></div></ProtectedRoute>} />
-            <Route path="/bulk-import" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📥 Bulk Import Books</h1><p className="mt-4 text-slate-600">Import from CSV/Excel (Coming Soon)</p></div></ProtectedRoute>} />
-            <Route path="/book-collections" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📦 Book Collections</h1><p className="mt-4 text-slate-600">Manage book collections (Coming Soon)</p></div></ProtectedRoute>} />
-            <Route path="/isbn-management" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🏷️ ISBN Management</h1><p className="mt-4 text-slate-600">Manage ISBN entries (Coming Soon)</p></div></ProtectedRoute>} />
-            <Route path="/pending-approvals" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">✅ Pending Approvals</h1><p className="mt-4 text-slate-600">Approve new submissions (Coming Soon)</p></div></ProtectedRoute>} />
-            
-            {/* New Book Management Routes */}
-            <Route path="/books-library" element={<BooksPage />} />
-            <Route path="/add-book" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">➕ Add New Book</h1><p className="mt-4 text-slate-600">Add new book form (Coming Soon)</p></div>} />
-            <Route path="/edit-books" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">✏️ Edit Books</h1><p className="mt-4 text-slate-600">Edit books page (Coming Soon)</p></div>} />
-            <Route path="/search-books" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🔍 Search Books</h1><p className="mt-4 text-slate-600">Advanced book search (Coming Soon)</p></div>} />
-            <Route path="/book-catalog" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📖 Book Catalog</h1><p className="mt-4 text-slate-600">Complete catalog view (Coming Soon)</p></div>} />
-            <Route path="/book-duplicates" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📋 Book Duplicates</h1><p className="mt-4 text-slate-600">Find duplicate entries (Coming Soon)</p></div>} />
-            <Route path="/bulk-import" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📥 Bulk Import Books</h1><p className="mt-4 text-slate-600">Import from CSV/Excel (Coming Soon)</p></div>} />
-            <Route path="/book-collections" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📦 Book Collections</h1><p className="mt-4 text-slate-600">Manage book collections (Coming Soon)</p></div>} />
-            <Route path="/isbn-management" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🏷️ ISBN Management</h1><p className="mt-4 text-slate-600">Manage ISBN entries (Coming Soon)</p></div>} />
-            <Route path="/pending-approvals" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">✅ Pending Approvals</h1><p className="mt-4 text-slate-600">Approve new submissions (Coming Soon)</p></div>} />
-            
-            {/* New Member Management Routes */}
-            <Route path="/add-member" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">➕ Add New Member</h1><p className="mt-4 text-slate-600">Member registration form (Coming Soon)</p></div>} />
-            <Route path="/active-members" element={<ActiveMembersPage />} />
-            <Route path="/suspended-members" element={<SuspendedMembersPage />} />
-            <Route path="/search-members" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🔍 Search Members</h1><p className="mt-4 text-slate-600">Advanced member search (Coming Soon)</p></div>} />
-            <Route path="/member-profiles" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">👤 Member Profiles</h1><p className="mt-4 text-slate-600">Detailed member information (Coming Soon)</p></div>} />
-            <Route path="/member-roles" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🛡️ Member Roles & Permissions</h1><p className="mt-4 text-slate-600">Manage roles and permissions (Coming Soon)</p></div>} />
-            <Route path="/member-stats" element={<MemberStatsPage />} />
-            <Route path="/send-notifications" element={<SendNotificationsPage />} />
-            
-            {/* Borrowing Management Routes */}
-            <Route path="/active-borrowings" element={<ActiveBorrowingsPage />} />
-            <Route path="/overdue-management" element={<OverdueManagementPage />} />
-            <Route path="/due-soon" element={<DueSoonPage />} />
-            <Route path="/process-return" element={<ProcessReturnPage />} />
-            <Route path="/renew-books" element={<RenewBooksPage />} />
-            <Route path="/borrowing-history" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📖 Borrowing History</h1><p className="mt-4 text-slate-600">Complete borrowing records (Coming Soon)</p></div>} />
-            
-            {/* Reservation Routes */}
-            <Route path="/reservations" element={<ReservationsPage />} />
-            <Route path="/new-reservation" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">➕ New Reservation</h1><p className="mt-4 text-slate-600">Create reservation (Coming Soon)</p></div>} />
-            <Route path="/pending-reservations" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">⏳ Pending Reservations</h1><p className="mt-4 text-slate-600">View pending reservations (Coming Soon)</p></div>} />
-            <Route path="/ready-pickup" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">✅ Ready for Pickup</h1><p className="mt-4 text-slate-600">Books ready for member pickup (Coming Soon)</p></div>} />
-            <Route path="/expired-reservations" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">⏱️ Expired Reservations</h1><p className="mt-4 text-slate-600">Manage expired reservations (Coming Soon)</p></div>} />
-            
-            {/* Fine Management Routes */}
-            <Route path="/fine-management" element={<FineManagementPage />} />
-            <Route path="/outstanding-fines" element={<OutstandingFinesPage />} />
-            <Route path="/paid-fines" element={<PaidFinesPage />} />
-            <Route path="/fine-reports" element={<FineReportsPage />} />
-            
-            {/* Communications Routes */}
-            <Route path="/admin-notifications" element={<NotificationsAdminPage />} />
-            <Route path="/send-messages" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">💌 Send Messages</h1><p className="mt-4 text-slate-600">Send messages to members (Coming Soon)</p></div>} />
-            <Route path="/member-feedback" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">💬 Member Feedback</h1><p className="mt-4 text-slate-600">View member reviews (Coming Soon)</p></div>} />
-            
-            {/* Administration Routes */}
-            <Route path="/audit-log" element={<AuditLogPage />} />
-            <Route path="/backup-restore" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">💾 Backup & Restore</h1><p className="mt-4 text-slate-600">Database backup options (Coming Soon)</p></div>} />
-            <Route path="/maintenance" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🔧 System Maintenance</h1><p className="mt-4 text-slate-600">Maintenance tasks (Coming Soon)</p></div>} />
-            <Route path="/security-settings" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">🔐 Security Settings</h1><p className="mt-4 text-slate-600">System security (Coming Soon)</p></div>} />
-            <Route path="/export-data" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">📤 Export Data</h1><p className="mt-4 text-slate-600">Export to PDF/Excel (Coming Soon)</p></div>} />
-            <Route path="/system-config" element={<div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">⚙️ System Configuration</h1><p className="mt-4 text-slate-600">System settings (Coming Soon)</p></div>} />
-            <Route path="/statistics" element={<StatisticsPage />} />
             
             {/* Old Routes */}
             <Route path="/settings" element={<SettingsPage />} />
