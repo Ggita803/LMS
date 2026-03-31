@@ -14,6 +14,8 @@ const AddBookModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
     copies: 1,
     available: 1,
     description: '',
+    cover: null,
+    book_file: null,
   });
 
   const [categories, setCategories] = useState([]);
@@ -40,6 +42,8 @@ const AddBookModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
     if (!formData.category_id) newErrors.category_id = 'Category is required';
     if (formData.copies < 1) newErrors.copies = 'Must have at least 1 copy';
     if (formData.available > formData.copies) newErrors.available = 'Available cannot exceed total copies';
+    if (!formData.cover) newErrors.cover = 'Cover image is required';
+    if (!formData.book_file) newErrors.book_file = 'Book file is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -47,7 +51,18 @@ const AddBookModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    await onSubmit(formData);
+    const data = new FormData();
+    
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key === 'cover' || key === 'book_file') {
+        if (value) {
+          data.append(key, value);
+        }
+      } else if (value !== undefined && value !== null) {
+        data.append(key, value);
+      }
+    });
+    await onSubmit(data);
     setFormData({
       title: '',
       author: '',
@@ -56,15 +71,17 @@ const AddBookModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
       copies: 1,
       available: 1,
       description: '',
+      cover: null,
+      book_file: null,
     });
     setErrors({});
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'copies' || name === 'available' ? parseInt(value) : value,
+      [name]: files ? files[0] : (name === 'copies' || name === 'available' ? parseInt(value) : value),
     }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
@@ -96,7 +113,46 @@ const AddBookModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
         </>
       }
     >
-      <form className="space-y-4">
+      <form className="space-y-4" encType="multipart/form-data">
+                {/* Cover Photo */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">
+                    Cover Photo *
+                  </label>
+                  <input
+                    type="file"
+                    name="cover"
+                    accept="image/*"
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                  {errors.cover && (
+                    <div className="flex items-center gap-2 mt-2 text-red-600 dark:text-red-400 text-sm">
+                      <AlertCircle className="w-4 h-4" />
+                      {errors.cover}
+                    </div>
+                  )}
+                </div>
+
+                {/* Book File */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">
+                    Book File (PDF, EPUB, etc) *
+                  </label>
+                  <input
+                    type="file"
+                    name="book_file"
+                    accept=".pdf,.epub,.mobi,.doc,.docx,.txt"
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                  {errors.book_file && (
+                    <div className="flex items-center gap-2 mt-2 text-red-600 dark:text-red-400 text-sm">
+                      <AlertCircle className="w-4 h-4" />
+                      {errors.book_file}
+                    </div>
+                  )}
+                </div>
         {/* Title */}
         <div>
           <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">

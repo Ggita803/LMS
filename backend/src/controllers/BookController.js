@@ -36,7 +36,22 @@ class BookController {
 
   static async createBook(req, res, next) {
     try {
-      const bookId = await BookService.createBook(req.body);
+      // Multipart/form-data sends everything as strings. Parse numbers explicitly.
+      const bookData = { 
+        ...req.body,
+        category_id: parseInt(req.body.category_id),
+        total_copies: parseInt(req.body.copies),
+        available_copies: parseInt(req.body.available)
+      };
+
+      if (req.files?.cover) {
+        bookData.cover_url = `/uploads/books/${req.files.cover[0].filename}`;
+      }
+      if (req.files?.book_file) {
+        bookData.book_file_url = `/uploads/books/${req.files.book_file[0].filename}`;
+      }
+
+      const bookId = await BookService.createBook(bookData);
       sendSuccess(res, 'Book added', { bookId }, 201);
     } catch (error) {
       next(error);

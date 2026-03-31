@@ -31,11 +31,28 @@ const loginValidator = [
 ];
 
 // Book Validators
+const requireBookFiles = (req, res, next) => {
+  // Only enforce on create (POST)
+  console.log('DEBUG: requireBookFiles req.method:', req.method);
+  console.log('DEBUG: requireBookFiles req.files:', req.files);
+  if (req.method === 'POST') {
+    if (!req.files || !req.files.cover || !req.files.book_file) {
+      console.log('DEBUG: requireBookFiles missing files:', req.files);
+      return res.status(400).json({
+        success: false,
+        message: 'Cover image and book file are required',
+      });
+    }
+  }
+  next();
+};
+
 const bookValidator = [
   body('title').trim().notEmpty().withMessage('Title is required'),
   body('author').trim().notEmpty().withMessage('Author is required'),
   body('isbn').optional().trim(),
   body('publication_year').optional().isInt(),
+  requireBookFiles,
   handleValidationErrors,
 ];
 

@@ -78,20 +78,10 @@ const BooksPageContent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [viewBook, setViewBook] = useState(null);
 
-  const handleAddBook = async (formData) => {
+  const handleAddBook = async (data) => {
     setIsLoading(true);
     try {
-      // Map frontend fields to backend fields
-      const payload = {
-        title: formData.title,
-        author: formData.author,
-        isbn: formData.isbn,
-        category_id: formData.category_id,
-        total_copies: formData.copies,
-        available_copies: formData.available,
-        description: formData.description,
-      };
-      await addBook(payload);
+      await addBook(data);
       // Refresh books from backend
       const booksRes = await getBooks();
       const catMap = {};

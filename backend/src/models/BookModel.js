@@ -42,13 +42,16 @@ class BookModel {
 
   static async create(bookData) {
     try {
-      const { title, author, isbn, category_id, publication_year, publisher, description, total_copies } = bookData;
+      const { title, author, isbn, category_id, publication_year, publisher, description, total_copies, available_copies, cover_url, book_file_url } = bookData;
+      console.log('DEBUG: BookModel.create bookData:', bookData);
+      console.log('DEBUG: SQL values:', [title, author, isbn, category_id, publication_year, publisher, description, total_copies, available_copies, cover_url, book_file_url]);
       const [result] = await pool.query(
-        'INSERT INTO books (title, author, isbn, category_id, publication_year, publisher, description, total_copies, available_copies) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [title, author, isbn, category_id, publication_year, publisher, description, total_copies, total_copies]
+        'INSERT INTO books (title, author, isbn, category_id, publication_year, publisher, description, total_copies, available_copies, cover_url, book_file_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [title, author, isbn, category_id, publication_year, publisher, description, total_copies, available_copies, cover_url, book_file_url]
       );
       return result.insertId;
     } catch (error) {
+      console.error('DEBUG: BookModel.create error:', error);
       throw new DatabaseError(error.message);
     }
   }
