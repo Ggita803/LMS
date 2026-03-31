@@ -3,6 +3,14 @@ const { sendSuccess, sendPaginated } = require('../utils/response');
 const { DEFAULT_PAGE, DEFAULT_LIMIT } = require('../constants/appConstants');
 
 class UserController {
+  static async deleteUser(req, res, next) {
+    try {
+      await UserService.deleteUser(req.params.id);
+      sendSuccess(res, 'User deleted successfully');
+    } catch (error) {
+      next(error);
+    }
+  }
   static async getProfile(req, res, next) {
     try {
       const user = await UserService.getUserProfile(req.user.userId);

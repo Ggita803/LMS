@@ -2,6 +2,17 @@ const pool = require('../config/database');
 const { DatabaseError, NotFoundError } = require('../exceptions/AppError');
 
 class UserModel {
+  static async delete(userId) {
+    try {
+      const [result] = await pool.query('DELETE FROM users WHERE user_id = ?', [userId]);
+      if (result.affectedRows === 0) {
+        throw new NotFoundError('User not found');
+      }
+      return true;
+    } catch (error) {
+      throw new DatabaseError(error.message);
+    }
+  }
   static async findById(userId) {
     try {
       const [rows] = await pool.query(

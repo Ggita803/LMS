@@ -8,8 +8,10 @@ const { ROLES } = require('../constants/appConstants');
 router.get('/profile', authenticate, UserController.getProfile);
 router.put('/profile', authenticate, UserController.updateProfile);
 
-// Admin Routes
-router.get('/', authenticate, authorize(ROLES.ADMIN,ROLES.LIBRARIAN), UserController.getAllUsers);
+
+// Admin & Librarian Routes
+router.get('/', authenticate, authorize(ROLES.ADMIN, ROLES.LIBRARIAN), UserController.getAllUsers);
 router.get('/:id', authenticate, UserController.getUser);
+router.delete('/:id', authenticate, authorize(ROLES.ADMIN, ROLES.LIBRARIAN), UserController.deleteUser);
 
 module.exports = router;

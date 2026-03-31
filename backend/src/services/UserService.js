@@ -2,6 +2,14 @@ const UserModel = require('../models/UserModel');
 const { NotFoundError } = require('../exceptions/AppError');
 
 class UserService {
+  static async deleteUser(userId) {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+    await UserModel.delete(userId);
+    return true;
+  }
   static async getUserProfile(userId) {
     const user = await UserModel.findById(userId);
     if (!user) {
