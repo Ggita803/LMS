@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, 
@@ -8,6 +8,8 @@ import LibraryHeroImage from '../assets/images/LibraryHeroImage.jpg';
 import MemberLayout from './MemberLayout';
 import BookCard from './BookCard';
 import Modal from '../components/Modal';
+import { getBooks } from '../services/bookService';
+import { getCategories } from '../services/categoryService';
 
 
 const MemberPortal = () => {
@@ -20,25 +22,46 @@ const MemberPortal = () => {
 
   // Loading and error state for async book fetch
   const [books, setBooks] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  React.useEffect(() => {
-    setLoading(true);
-    setError(null);
-    // Simulate async fetch
-    setTimeout(() => {
-      // Simulate error: setError('Failed to fetch books.'); setLoading(false); return;
-      setBooks([
-        { id: 1, title: 'Things Fall Apart', author: 'Chinua Achebe', category: 'Fiction', status: 'Available', fine_per_day: 500, createdAt: '2026-03-01' },
-        { id: 2, title: 'Clean Code', author: 'Robert C. Martin', category: 'Technology', status: 'Borrowed', fine_per_day: 1000, createdAt: '2026-03-20' },
-        { id: 3, title: 'Kintu', author: 'Jennifer Makumbi', category: 'Fiction', status: 'Available', fine_per_day: 500, createdAt: '2026-03-25' },
-        { id: 4, title: 'The River Between', author: 'Ngũgĩ wa Thiong\'o', category: 'Academic', status: 'Available', fine_per_day: 700, createdAt: '2026-03-10' },
-        { id: 5, title: 'Data Structures', author: 'N. Karumanchi', category: 'Technology', status: 'Available', fine_per_day: 800, createdAt: '2026-03-28' },
-        { id: 6, title: 'Tropical Fish', author: 'Doreen Baingana', category: 'Fiction', status: 'Available', fine_per_day: 500, createdAt: '2026-03-29' },
-      ]);
-      setLoading(false);
-    }, 1200);
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const [booksData, categoriesData] = await Promise.all([
+          getBooks(),
+          getCategories()
+        ]);
+        
+        setCategories(categoriesData);
+        
+        const catMap = {};
+        categoriesData.forEach(c => catMap[c.category_id] = c.category_name);
+
+        const mappedBooks = booksData.map(b => ({
+          id: b.book_id,
+          title: b.title,
+          author: b.author,
+          category: catMap[b.category_id] || 'Uncategorized',
+          status: b.available_copies > 0 ? 'Available' : 'Borrowed',
+          fine_per_day: 500, 
+          createdAt: b.created_at,
+          cover_url: b.cover_url,
+          description: b.description
+        }));
+
+        setBooks(mappedBooks);
+      } catch (err) {
+        setError('Failed to fetch library resources.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
   // Enhanced filter logic for 'Available' and 'Recently Added'
@@ -121,9 +144,9 @@ const MemberPortal = () => {
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
                 <option value="All">All Categories</option>
-                <option value="Fiction">Fiction</option>
-                <option value="Technology">Technology</option>
-                <option value="Academic">Academic</option>
+                {categories.map(cat => (
+                  <option key={cat.category_id} value={cat.category_name}>{cat.category_name}</option>
+                ))}
               </select>
             </div>
             <button className="h-14 px-10 bg-sky-600 hover:bg-sky-700 text-white rounded-[50px] font-bold transition-all shadow-lg shadow-sky-600/20 uppercase tracking-widest">
