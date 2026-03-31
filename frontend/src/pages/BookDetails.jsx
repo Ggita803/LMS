@@ -150,7 +150,7 @@ const BookDetails = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
                 <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">ISBN</p>
-                <p className="text-sm font-bold truncate">{book.isbn}</p>
+                <p className="text-sm font-bold truncate text-slate-900 dark:text-white">{book.isbn}</p>
               </div>
               <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
                 <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Fine/Day</p>
@@ -158,17 +158,17 @@ const BookDetails = () => {
               </div>
               <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
                 <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Published</p>
-                <p className="text-sm font-bold">{book.published_year}</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">{book.published_year}</p>
               </div>
               <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
                 <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Available</p>
-                <p className="text-sm font-bold">{book.copies_available} Copies</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">{book.copies_available} Copies</p>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h3 className="font-bold text-lg">About this book</h3>
-              <p className="text-muted leading-relaxed text-lg">
+              <h3 className="font-bold text-lg text-slate-900 dark:text-white">About this book</h3>
+              <p className="text-slate-700 dark:text-slate-300 leading-relaxed text-lg">
                 {book.description}
               </p>
             </div>

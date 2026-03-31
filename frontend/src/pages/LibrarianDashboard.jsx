@@ -133,8 +133,8 @@ const LibrarianDashboard = () => {
               <div className={`${stat.bg} w-12 h-12 rounded-xl flex items-center justify-center mb-4 relative z-10`}>
                 <stat.icon className={`w-6 h-6 ${stat.color}`} />
               </div>
-              <p className="text-sm font-medium text-slate-500 uppercase tracking-wider relative z-10">{stat.label}</p>
-              <h3 className="text-3xl font-bold mt-1 relative z-10">{stat.value}</h3>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider relative z-10">{stat.label}</p>
+              <h3 className="text-3xl font-bold mt-1 relative z-10 text-slate-900 dark:text-white">{stat.value}</h3>
             </motion.div>
           ))}
         </div>
@@ -147,8 +147,8 @@ const LibrarianDashboard = () => {
                 <BookOpen className="w-7 h-7" />
               </div>
               <div>
-                <h4 className="font-bold text-lg">Book Inventory</h4>
-                <p className="text-xs text-muted">Add, update, and manage the book catalog</p>
+                <h4 className="font-bold text-lg text-slate-900 dark:text-white">Book Inventory</h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Add, update, and manage the book catalog</p>
               </div>
             </div>
           </Link>
@@ -158,8 +158,8 @@ const LibrarianDashboard = () => {
                 <Database className="w-7 h-7" />
               </div>
               <div>
-                <h4 className="font-bold text-lg">Categories</h4>
-                <p className="text-xs text-muted">Create and organize book categories</p>
+                <h4 className="font-bold text-lg text-slate-900 dark:text-white">Categories</h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Create and organize book categories</p>
               </div>
             </div>
           </Link>
@@ -169,8 +169,8 @@ const LibrarianDashboard = () => {
                 <Users className="w-7 h-7" />
               </div>
               <div>
-                <h4 className="font-bold text-lg">Members</h4>
-                <p className="text-xs text-muted">Manage member accounts and roles</p>
+                <h4 className="font-bold text-lg text-slate-900 dark:text-white">Members</h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Manage member accounts and roles</p>
               </div>
             </div>
           </Link>
@@ -181,9 +181,9 @@ const LibrarianDashboard = () => {
           <div className="card border-l-4 border-l-sky-600">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm text-muted uppercase tracking-wide mb-2">Pending Tasks</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">Pending Tasks</p>
                 <h3 className="text-4xl font-bold text-sky-600">{overview?.pending_tasks ?? 0}</h3>
-                <p className="text-xs text-muted mt-3">Books waiting for approval</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-3">Books waiting for approval</p>
               </div>
               <BookOpen className="w-12 h-12 text-sky-100 dark:text-sky-900/30" />
             </div>
@@ -191,9 +191,9 @@ const LibrarianDashboard = () => {
           <div className="card border-l-4 border-l-blue-600">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm text-muted uppercase tracking-wide mb-2">Active Categories</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">Active Categories</p>
                 <h3 className="text-4xl font-bold text-blue-600">{overview?.total_categories ?? 0}</h3>
-                <p className="text-xs text-muted mt-3">Well-organized collection</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-3">Well-organized collection</p>
               </div>
               <Database className="w-12 h-12 text-blue-100 dark:text-blue-900/30" />
             </div>
@@ -201,13 +201,13 @@ const LibrarianDashboard = () => {
           <div className="card border-l-4 border-l-emerald-600">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm text-muted uppercase tracking-wide mb-2">Content Quality</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">Content Quality</p>
                 <h3 className="text-4xl font-bold text-emerald-600">{
                   overview?.total_books
                     ? `${Math.round((Number(overview.available_books) / Number(overview.total_books)) * 100)}%`
                     : '0%'}
                 </h3>
-                <p className="text-xs text-muted mt-3">Catalog completeness</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-3">Catalog completeness</p>
               </div>
               <TrendingUp className="w-12 h-12 text-emerald-100 dark:text-emerald-900/30" />
             </div>
@@ -217,7 +217,7 @@ const LibrarianDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-10">
           {/* Borrowing Trends Chart */}
           <div className="lg:col-span-2 card bg-white dark:bg-slate-900 p-6">
-            <h3 className="font-bold text-lg mb-8">Monthly Borrowing Trends</h3>
+            <h3 className="font-bold text-lg mb-8 text-slate-900 dark:text-white">Monthly Borrowing Trends</h3>
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData}>
@@ -237,7 +237,7 @@ const LibrarianDashboard = () => {
 
           {/* Collection Distribution Pie Chart */}
           <div className="card bg-white dark:bg-slate-900 p-6">
-            <h3 className="font-bold text-lg mb-8">Collection by Category</h3>
+            <h3 className="font-bold text-lg mb-8 text-slate-900 dark:text-white">Collection by Category</h3>
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -267,8 +267,8 @@ const LibrarianDashboard = () => {
           <div className="lg:col-span-3 card bg-white dark:bg-slate-900 p-6">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h3 className="font-bold text-lg">Fine Collection Revenue</h3>
-                <p className="text-xs text-muted">Tracking total income in Ugandan Shillings</p>
+                <h3 className="font-bold text-lg text-slate-900 dark:text-white">Fine Collection Revenue</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Tracking total income in Ugandan Shillings</p>
               </div>
               <div className="p-2 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
                 <Banknote className="w-5 h-5 text-emerald-600" />
@@ -308,7 +308,7 @@ const LibrarianDashboard = () => {
           {/* Recent Activity */}
           <div className="card">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="font-bold text-lg">Recent Transactions</h3>
+              <h3 className="font-bold text-lg text-slate-900 dark:text-white">Recent Transactions</h3>
               <History className="w-5 h-5 text-slate-400" />
             </div>
             <div className="space-y-6">
@@ -322,11 +322,11 @@ const LibrarianDashboard = () => {
                     <span className="text-xs font-bold text-sky-600">{item.user.split(' ').map(n => n[0]).join('')}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold truncate">
-                      {item.user} <span className="font-normal text-muted">{item.action}</span> "{item.book}"
+                    <p className="text-sm font-semibold truncate text-slate-900 dark:text-white">
+                      {item.user} <span className="font-normal text-slate-500 dark:text-slate-400">{item.action}</span> "{item.book}"
                     </p>
                     <div className="flex items-center gap-2 mt-1">
-                      <p className="text-xs text-muted">{item.time}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{item.time}</p>
                       <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
                         item.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 
                         item.status === 'Completed' ? 'bg-slate-100 text-slate-600' : 
