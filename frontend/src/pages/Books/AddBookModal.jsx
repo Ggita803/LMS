@@ -13,6 +13,8 @@ const AddBookModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
     category_id: '',
     copies: 1,
     available: 1,
+    publication_year: '',
+    publisher: '',
     description: '',
     cover: null,
     book_file: null,
@@ -70,6 +72,8 @@ const AddBookModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
       category_id: categories[0]?.category_id || '',
       copies: 1,
       available: 1,
+      publication_year: '',
+      publisher: '',
       description: '',
       cover: null,
       book_file: null,
@@ -133,6 +137,37 @@ const AddBookModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
                     </div>
                   )}
                 </div>
+
+        {/* Publication Year and Publisher - Two columns */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">
+              Publication Year
+            </label>
+            <input
+              type="number"
+              name="publication_year"
+              value={formData.publication_year}
+              onChange={handleChange}
+              placeholder="e.g. 2024"
+              className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">
+              Publisher
+            </label>
+            <input
+              type="text"
+              name="publisher"
+              value={formData.publisher}
+              onChange={handleChange}
+              placeholder="Publisher name"
+              className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+        </div>
 
                 {/* Book File */}
                 <div>

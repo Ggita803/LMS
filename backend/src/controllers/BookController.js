@@ -40,6 +40,7 @@ class BookController {
       const bookData = { 
         ...req.body,
         category_id: parseInt(req.body.category_id),
+        publication_year: req.body.publication_year ? parseInt(req.body.publication_year) : null,
         total_copies: parseInt(req.body.copies),
         available_copies: parseInt(req.body.available)
       };
