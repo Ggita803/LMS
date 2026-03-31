@@ -59,10 +59,21 @@ const LibrarianDashboard = () => {
           { label: 'Active Members', value: overviewData?.total_members?.toLocaleString() ?? '0', icon: Users, color: 'text-accent-600', bg: 'bg-accent-50' },
           { label: 'Pending Returns', value: overdueBooks?.overdueBooks?.length ?? '0', icon: AlertCircle, color: 'text-amber-600', bg: 'bg-amber-50' },
           { label: 'Monthly Growth', value: overviewData?.monthlyGrowth !== undefined ? `+${overviewData.monthlyGrowth}%` : '+0%', icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-          { label: 'Active Categories', value: overviewData?.total_categories?.toLocaleString() ?? '0', icon: Database, color: 'text-blue-600', bg: 'bg-blue-50' },
+          // { label: 'Active Categories', value: overviewData?.total_categories?.toLocaleString() ?? '0', icon: Database, color: 'text-blue-600', bg: 'bg-blue-50' },
         ]);
         setCategoryData(categories?.stats?.map(cat => ({ name: cat.category_name, value: cat.total_books })) ?? []);
-        setChartData(activity?.activity?.map(item => ({ name: item.month || item.date, borrows: item.count })) ?? []);
+        // Borrowing trends: fallback to flat zero if no data
+        let trends = activity?.activity?.map(item => ({ name: item.month || item.date, borrows: item.count })) ?? [];
+        if (!trends.length) {
+          // Generate last 6 months as fallback
+          const now = new Date();
+          trends = Array.from({ length: 6 }).map((_, i) => {
+            const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
+            const label = d.toLocaleString('default', { month: 'short' });
+            return { name: label, borrows: 0 };
+          });
+        }
+        setChartData(trends);
         setRevenueData(growth?.growth ?? []);
       })
       .catch((err) => {
@@ -191,7 +202,11 @@ const LibrarianDashboard = () => {
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm text-muted uppercase tracking-wide mb-2">Content Quality</p>
-                <h3 className="text-4xl font-bold text-emerald-600">{overview?.content_quality ?? '94%'}</h3>
+                <h3 className="text-4xl font-bold text-emerald-600">{
+                  overview?.total_books
+                    ? `${Math.round((Number(overview.available_books) / Number(overview.total_books)) * 100)}%`
+                    : '0%'}
+                </h3>
                 <p className="text-xs text-muted mt-3">Catalog completeness</p>
               </div>
               <TrendingUp className="w-12 h-12 text-emerald-100 dark:text-emerald-900/30" />
