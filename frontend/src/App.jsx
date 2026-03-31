@@ -115,9 +115,9 @@ function App() {
             <Route path="/manage-users" element={<ProtectedRoute roles={['librarian']}><UsersPage /></ProtectedRoute>} />
             <Route path="/manage-categories" element={<ProtectedRoute roles={['librarian']}><ManageCategories /></ProtectedRoute>} />
             <Route path="/reports" element={<ProtectedRoute roles={['librarian']}><ReportsPage /></ProtectedRoute>} />
-            <Route path="/books" element={<ProtectedRoute roles={['librarian']}><BrowseBooks /></ProtectedRoute>} />
-            <Route path="/books/:id" element={<ProtectedRoute roles={['librarian']}><BookDetails /></ProtectedRoute>} />
-            <Route path="/my-library" element={<ProtectedRoute roles={['librarian']}><MyLibrary /></ProtectedRoute>} />
+            <Route path="/books" element={<ProtectedRoute roles={['librarian', 'member']}><BrowseBooks /></ProtectedRoute>} />
+            <Route path="/books/:id" element={<ProtectedRoute roles={['librarian', 'member']}><BookDetails /></ProtectedRoute>} />
+            <Route path="/my-library" element={<ProtectedRoute roles={['librarian', 'member']}><MyLibrary /></ProtectedRoute>} />
             <Route path="/books-library" element={<ProtectedRoute roles={['librarian']}><BooksPage /></ProtectedRoute>} />
             <Route path="/add-book" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">➕ Add New Book</h1><p className="mt-4 text-slate-600">Add new book form (Coming Soon)</p></div></ProtectedRoute>} />
             <Route path="/edit-books" element={<ProtectedRoute roles={['librarian']}><div className="p-8 min-h-screen"><h1 className="text-3xl font-bold">✏️ Edit Books</h1><p className="mt-4 text-slate-600">Edit books page (Coming Soon)</p></div></ProtectedRoute>} />

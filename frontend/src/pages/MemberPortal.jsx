@@ -119,28 +119,28 @@ const MemberPortal = () => {
 
         <div className="relative z-10 w-full max-w-5xl px-4 text-center space-y-12 animate-fade-in-up">
           <div>
-            <h1 className="text-4xl md:text-6xl lg:text-5xl font-black text-white mt-12 mb-6 tracking-wider leading-tight">
+            <h1 className="text-3xl md:text-6xl lg:text-5xl font-black text-white mt-12 mb-4 tracking-tight md:tracking-wider leading-tight">
               Explore the Universe of Knowledge
             </h1>
-            <p className="text-base md:text-lg text-slate-200 font-medium max-w-2xl mx-auto leading-tight opacity-90">
+            <p className="text-sm md:text-lg text-slate-200 font-medium max-w-2xl mx-auto leading-relaxed opacity-90 px-4">
               Access thousands of academic resources, research journals, and local literature at your fingertips.
             </p>
           </div>
 
           {/* Prominent Search Bar */}
-          <div className="bg-white/95 dark:bg-slate-900/95 p-2 rounded-[50px] shadow-2xl shadow-sky-900/20 flex flex-col md:flex-row gap-2 max-w-4xl mx-auto ring-1 ring-white/20">
+          <div className="bg-white/95 dark:bg-slate-900/95 p-2 rounded-3xl md:rounded-full shadow-2xl shadow-sky-900/20 flex flex-col md:flex-row gap-2 max-w-4xl mx-auto ring-1 ring-white/20 backdrop-blur-sm">
             <div className="flex-1 relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
               <input 
                 type="text" 
                 placeholder="Search by title, author, or ISBN..." 
-                className="w-full h-14 pl-14 pr-4 bg-transparent border-none focus:ring-0 focus:outline-none text-lg font-medium"
+                className="w-full h-12 md:h-14 pl-12 md:pl-14 pr-4 bg-transparent border-none focus:ring-0 focus:outline-none text-base md:text-lg font-medium placeholder:text-slate-400"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <div className="h-14 w-[1px] bg-slate-100 dark:bg-slate-800 hidden md:block"></div>
-            <div className="relative min-w-[180px]">
+            <div className="relative md:min-w-[180px] border-t md:border-t-0 border-slate-100 dark:border-slate-800">
               <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
               <select 
                 className="w-full h-14 pl-10 pr-8 bg-transparent border-none focus:ring-0 focus:outline-none text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 appearance-none cursor-pointer"
@@ -153,8 +153,11 @@ const MemberPortal = () => {
                 ))}
               </select>
             </div>
-            <button className="h-14 px-10 bg-sky-600 hover:bg-sky-700 text-white rounded-[50px] font-bold transition-all shadow-lg shadow-sky-600/20 uppercase tracking-widest">
-              Search
+            <button 
+              aria-label="Search"
+              className="h-12 md:h-14 w-full md:w-14 flex-shrink-0 bg-sky-600 hover:bg-sky-700 text-white rounded-2xl md:rounded-full flex items-center justify-center transition-all shadow-lg shadow-sky-600/20 group"
+            >
+              <Search className="w-5 h-5 group-hover:scale-110 transition-transform" />
             </button>
           </div>
         </div>

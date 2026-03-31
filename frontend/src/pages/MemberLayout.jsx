@@ -39,9 +39,11 @@ const MemberLayout = ({ children }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isAccountOpen]);
 
+  // Deeply normalize user extraction to support varying backend responses
+  const currentUser = user?.user?.user || user?.user || user;
   const memberDetails = {
-    studentId: user?.studentId || "240080737",
-    program: user?.program || "Bachelor of Science in Computer Science",
+    studentId: currentUser?.studentId || "240080737",
+    program: currentUser?.program || "Bachelor of Science in Computer Science",
   };
 
   return (
@@ -84,10 +86,10 @@ const MemberLayout = ({ children }) => {
                 className="flex items-center gap-3 p-1 pr-3 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
               >
                 <div className="w-8 h-8 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center font-bold text-sm">
-                  {user?.username?.[0].toUpperCase()}
+                  {currentUser?.username?.[0].toUpperCase()}
                 </div>
                 <span className="text-sm font-bold text-slate-700 dark:text-slate-200 hidden sm:inline">
-                  {user?.username}
+                  {currentUser?.username}
                 </span>
                 <ChevronDown
                   className={`w-4 h-4 text-slate-400 transition-transform ${isAccountOpen ? "rotate-180" : ""}`}
@@ -105,9 +107,9 @@ const MemberLayout = ({ children }) => {
                       Student Account
                     </p>
                     <h3 className="text-lg font-bold">
-                      {user?.first_name} {user?.last_name}
+                      {currentUser?.first_name} {currentUser?.last_name}
                     </h3>
-                    <p className="text-sm opacity-90 truncate">{user?.email}</p>
+                    <p className="text-sm opacity-90 truncate">{currentUser?.email}</p>
                   </div>
 
                   <div className="p-4 space-y-4">
