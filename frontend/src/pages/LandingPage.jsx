@@ -335,11 +335,11 @@ const LandingPage = () => {
           <div className="grid sm:grid-cols-3 gap-8">
             <div className="flex flex-col items-center gap-3">
               <div className="p-4 bg-sky-50 dark:bg-sky-900/30 rounded-full"><Mail className="w-6 h-6 text-sky-600" /></div>
-              <span className="font-semibold text-slate-900 dark:text-white text-sm">support@lms.com</span>
+              <span className="font-semibold text-slate-900 dark:text-white text-sm">mbawaddedoreen83@gmail.com</span>
             </div>
             <div className="flex flex-col items-center gap-3">
               <div className="p-4 bg-sky-50 dark:bg-sky-900/30 rounded-full"><Phone className="w-6 h-6 text-sky-600" /></div>
-              <span className="font-semibold text-slate-900 dark:text-white text-sm">+256 700 000000</span>
+              <span className="font-semibold text-slate-900 dark:text-white text-sm">+256 746812427</span>
             </div>
             <div className="flex flex-col items-center gap-3">
               <div className="p-4 bg-sky-50 dark:bg-sky-900/30 rounded-full"><MapPin className="w-6 h-6 text-sky-600" /></div>
