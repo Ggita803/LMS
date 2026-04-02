@@ -37,6 +37,7 @@ const LibrarianDashboard = () => {
   const [revenueData, setRevenueData] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [overview, setOverview] = useState({});
+  const [pendingTasksCount, setPendingTasksCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -60,6 +61,10 @@ const LibrarianDashboard = () => {
         setOverview(overviewData || {});
         const overdueArray = Array.isArray(overdueBooks) ? overdueBooks : overdueBooks?.overdueBooks || [];
         const pendingArray = Array.isArray(pendingRequests?.records) ? pendingRequests.records : [];
+        
+        // Set pending tasks count from actual pending requests
+        setPendingTasksCount(pendingArray.length);
+        console.log('Pending tasks count:', pendingArray.length, 'Pending array:', pendingArray);
         
         setStats([
           { label: 'Total Books', value: overviewData?.total_books?.toLocaleString() ?? '0', icon: BookOpen, color: 'text-sky-600', bg: 'bg-sky-50' },
@@ -212,8 +217,8 @@ const LibrarianDashboard = () => {
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">Pending Tasks</p>
-                <h3 className="text-4xl font-bold text-sky-600">{overview?.pending_reservations ?? 0}</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-3">Books waiting for approval</p>
+                <h3 className="text-4xl font-bold text-sky-600">{pendingTasksCount}</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-3">Borrow requests awaiting approval</p>
               </div>
               <BookOpen className="w-12 h-12 text-sky-100 dark:text-sky-900/30" />
             </div>
