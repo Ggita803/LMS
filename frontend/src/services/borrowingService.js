@@ -5,16 +5,16 @@ const mapBorrowingRecord = (record) => ({
   id: record.borrow_id,
   userId: record.user_id,
   bookId: record.book_id,
-  memberName: record.username,
-  bookTitle: record.title,
-  author: record.author,
+  memberName: record.username || 'Unknown Member',
+  bookTitle: record.title || 'Unknown Book',
+  author: record.author || 'Unknown',
   borrowDate: record.checkout_date,
   dueDate: record.due_date,
   returnDate: record.return_date,
   status: record.status,
   approvalStatus: record.approval_status,
-  fine: record.fine_amount || 0,
-  renewalsCount: record.renewals_count || 0,
+  fine: parseFloat(record.fine_amount) || 0,
+  renewalsCount: parseInt(record.renewals_count) || 0,
   requestDate: record.created_at,
 });
 
@@ -96,12 +96,12 @@ export const borrowingService = {
       const stats = response.data.data?.stats || {};
       
       return {
-        activeBorrowings: stats.total_active || 0,
-        overdueItems: stats.total_overdue || 0,
-        dueSoon: stats.total_pending || 0, // Note: pending might not be the right field
-        pendingRequests: stats.total_pending || 0,
-        pendingFines: stats.total_outstanding_fines || 0,
-        returned: stats.total_returned || 0,
+        activeBorrowings: parseInt(stats.total_active) || 0,
+        overdueItems: parseInt(stats.total_overdue) || 0,
+        dueSoon: parseInt(stats.total_pending) || 0,
+        pendingRequests: parseInt(stats.total_pending) || 0,
+        pendingFines: parseFloat(stats.total_outstanding_fines) || 0,
+        returned: parseInt(stats.total_returned) || 0,
       };
     } catch (error) {
       console.error('Error fetching stats:', error);

@@ -74,7 +74,7 @@ const OverviewContent = () => {
         <StatCard
           icon={<DollarSign className="w-8 h-8" />}
           label="Outstanding Fines"
-          value={`$${(stats?.pendingFines || 0).toFixed(2)}`}
+          value={`$${(parseFloat(stats?.pendingFines) || 0).toFixed(2)}`}
           color="bg-orange-500"
         />
       </div>
@@ -280,7 +280,8 @@ const OverdueContent = () => {
   };
 
   const handlePayFine = (borrowId, fine) => {
-    const amount = prompt(`Enter payment amount (Total: $${fine?.toFixed(2) || 0}):`, fine?.toFixed(2));
+    const fineAmount = parseFloat(fine) || 0;
+    const amount = prompt(`Enter payment amount (Total: $${fineAmount.toFixed(2)}):`, fineAmount.toFixed(2));
     if (amount === null) return;
 
     borrowingService
@@ -325,7 +326,7 @@ const OverdueContent = () => {
 
                   <div className="text-right">
                     <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-3 py-2 rounded font-semibold mb-3">
-                      {`$${fine.toFixed(2)}`} Fine
+                      {`$${(parseFloat(fine) || 0).toFixed(2)}`} Fine
                     </div>
 
                     <div className="flex gap-2">
@@ -488,7 +489,7 @@ const HistoryContent = () => {
                   <div className="text-sm text-slate-600 dark:text-slate-400 space-y-1">
                     <p>Member: {item.memberName}</p>
                     <p>Returned: {new Date(item.returnDate).toLocaleDateString()}</p>
-                    {item.fine && <p className="text-red-600">Fine: ${item.fine.toFixed(2)}</p>}
+                    {item.fine && <p className="text-red-600">Fine: ${(parseFloat(item.fine) || 0).toFixed(2)}</p>}
                   </div>
                 </div>
 
