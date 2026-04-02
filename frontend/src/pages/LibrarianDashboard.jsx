@@ -212,7 +212,7 @@ const LibrarianDashboard = () => {
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">Pending Tasks</p>
-                <h3 className="text-4xl font-bold text-sky-600">{overview?.pending_tasks ?? 0}</h3>
+                <h3 className="text-4xl font-bold text-sky-600">{overview?.pending_reservations ?? 0}</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-3">Books waiting for approval</p>
               </div>
               <BookOpen className="w-12 h-12 text-sky-100 dark:text-sky-900/30" />
@@ -248,47 +248,59 @@ const LibrarianDashboard = () => {
           {/* Borrowing Trends Chart */}
           <div className="lg:col-span-2 card bg-white dark:bg-slate-900 p-6">
             <h3 className="font-bold text-lg mb-8 text-slate-900 dark:text-white">Monthly Borrowing Trends</h3>
-            <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
-                  <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
-                  <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} cursor={{ fill: '#f8fafc' }} />
-                  <Bar dataKey="borrows" radius={[6, 6, 0, 0]}>
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={index === chartData.length - 1 ? '#0ea5e9' : '#e2e8f0'} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            {chartData && chartData.length > 0 ? (
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
+                    <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
+                    <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} cursor={{ fill: '#f8fafc' }} />
+                    <Bar dataKey="borrows" radius={[6, 6, 0, 0]}>
+                      {chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={index === chartData.length - 1 ? '#0ea5e9' : '#e2e8f0'} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="h-[300px] w-full flex items-center justify-center bg-slate-50 dark:bg-slate-800 rounded-lg">
+                <p className="text-slate-500 dark:text-slate-400">No borrowing activity data available</p>
+              </div>
+            )}
           </div>
 
           {/* Collection Distribution Pie Chart */}
           <div className="card bg-white dark:bg-slate-900 p-6">
             <h3 className="font-bold text-lg mb-8 text-slate-900 dark:text-white">Collection by Category</h3>
-            <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={categoryData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {categoryData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={{ borderRadius: '12px', border: 'none' }} />
-                  <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }} />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+            {categoryData && categoryData.length > 0 ? (
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={categoryData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {categoryData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip contentStyle={{ borderRadius: '12px', border: 'none' }} />
+                    <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="h-[300px] w-full flex items-center justify-center bg-slate-50 dark:bg-slate-800 rounded-lg">
+                <p className="text-slate-500 dark:text-slate-400">No category data available</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -304,33 +316,39 @@ const LibrarianDashboard = () => {
                 <Banknote className="w-5 h-5 text-emerald-600" />
               </div>
             </div>
-            <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={revenueData}>
-                  <defs>
-                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.1}/>
-                      <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
-                  <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} tickFormatter={(value) => `Shs ${value / 1000}k`} />
-                  <Tooltip 
-                    formatter={(value) => [`Shs ${value.toLocaleString()}`, 'Revenue']}
-                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} 
-                  />
-                  <Area 
-                    type="monotone" 
-                    dataKey="books_added" 
-                    stroke="#0ea5e9" 
-                    strokeWidth={3}
-                    fillOpacity={1} 
-                    fill="url(#colorRevenue)" 
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
+            {revenueData && revenueData.length > 0 ? (
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={revenueData}>
+                    <defs>
+                      <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.1}/>
+                        <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                    <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
+                    <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} tickFormatter={(value) => `Shs ${value / 1000}k`} />
+                    <Tooltip 
+                      formatter={(value) => [`Shs ${value.toLocaleString()}`, 'Revenue']}
+                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} 
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="books_added" 
+                      stroke="#0ea5e9" 
+                      strokeWidth={3}
+                      fillOpacity={1} 
+                      fill="url(#colorRevenue)" 
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="h-[300px] w-full flex items-center justify-center bg-slate-50 dark:bg-slate-800 rounded-lg">
+                <p className="text-slate-500 dark:text-slate-400">No collection growth data available</p>
+              </div>
+            )}
           </div>
         </div>
 
