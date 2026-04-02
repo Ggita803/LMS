@@ -48,18 +48,18 @@ const Navbar = ({ isDark, toggleTheme, isMenuOpen, setIsMenuOpen }) => (
           </button>
           <Link to="/login" className="hidden sm:inline-block px-4 py-2 text-sm font-medium text-sky-600 border border-sky-600 rounded-lg hover:bg-sky-50 dark:hover:bg-sky-900 transition-smooth">Login</Link>
           <Link to="/register" className="hidden sm:inline-block px-6 py-2 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition-smooth font-medium text-sm">Get Started</Link>
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
-            <ChevronDown className={`w-5 h-5 transition-transform ${isMenuOpen ? 'rotate-180' : ''}`} />
+          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-smooth">
+            <ChevronDown className={`w-5 h-5 text-slate-700 dark:text-white transition-transform ${isMenuOpen ? 'rotate-180' : ''}`} />
           </button>
         </div>
       </div>
     </div>
     {isMenuOpen && (
-      <div className="md:hidden border-t border-slate-200 dark:border-slate-800 p-4 space-y-3">
-        <a href="#features" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 capitalize">features</a>
-        <Link to="/about" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 capitalize">about</Link>
-        <a href="#pricing" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 capitalize">pricing</a>
-        <Link to="/login" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600">Login</Link>
+      <div className="md:hidden bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-4 space-y-3">
+        <a href="#features" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 transition-smooth capitalize">features</a>
+        <Link to="/about" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 transition-smooth capitalize">about</Link>
+        <a href="#pricing" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 transition-smooth capitalize">pricing</a>
+        <Link to="/login" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 transition-smooth">Login</Link>
         <Link to="/register" className="block w-full px-4 py-3 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-lg text-center font-semibold hover:shadow-lg transition-smooth">Get Started</Link>
       </div>
     )}
