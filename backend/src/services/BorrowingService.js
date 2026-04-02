@@ -1,6 +1,7 @@
 const BorrowingModel = require('../models/BorrowingModel');
 const BookModel = require('../models/BookModel');
 const NotificationService = require('./NotificationService');
+const EmailService = require('./EmailService');
 const ReservationModel = require('../models/ReservationModel');
 const { NotFoundError, ValidationError } = require('../exceptions/AppError');
 const { MAX_BORROW_DAYS, MAX_RENEWALS } = require('../constants/appConstants');
@@ -204,7 +205,7 @@ class BorrowingService {
     try {
       // Get borrow request details
       const [borrow] = await pool.query(
-        `SELECT br.*, b.title, u.user_id, u.email FROM borrowing_records br
+        `SELECT br.*, b.title, u.user_id, u.email, u.username FROM borrowing_records br
          JOIN books b ON br.book_id = b.book_id
          JOIN users u ON br.user_id = u.user_id
          WHERE br.borrow_id = ?`,
@@ -224,12 +225,24 @@ class BorrowingService {
       // Approve
       await BorrowingModel.approveBorrow(borrowId, approvedByUserId);
 
+      // Send approval email
+      const dueDate = new Date(request.due_date).toLocaleDateString();
+      const lateFeePerDay = request.fine_amount || 500;
+      const maxFine = lateFeePerDay * 14;
+      
+      await EmailService.sendEmail(request.email, 'borrowApproved', {
+        userName: request.username,
+        bookTitle: request.title,
+        dueDate: dueDate,
+        lateFee: lateFeePerDay
+      }).catch(err => console.error('Email send error:', err));
+
       // Notify user
       await NotificationService.createNotification(
         request.user_id,
         'borrow_approved',
         'Borrow Request Approved',
-        `Your request to borrow "${request.title}" has been approved. Due date: ${new Date(request.due_date).toDateString()}`
+        `Your request to borrow "${request.title}" has been approved. Due date: ${dueDate}`
       );
 
       return { success: true, message: 'Borrow request approved' };
@@ -243,7 +256,7 @@ class BorrowingService {
     try {
       // Get borrow request details
       const [borrow] = await pool.query(
-        `SELECT br.*, b.title, u.user_id, u.email FROM borrowing_records br
+        `SELECT br.*, b.title, u.user_id, u.email, u.username FROM borrowing_records br
          JOIN books b ON br.book_id = b.book_id
          JOIN users u ON br.user_id = u.user_id
          WHERE br.borrow_id = ?`,
@@ -262,6 +275,13 @@ class BorrowingService {
 
       // Reject
       await BorrowingModel.rejectBorrow(borrowId, approvedByUserId, rejectionReason);
+
+      // Send rejection email
+      await EmailService.sendEmail(request.email, 'borrowRejected', {
+        userName: request.username,
+        bookTitle: request.title,
+        rejectionReason: rejectionReason || 'No specific reason provided'
+      }).catch(err => console.error('Email send error:', err));
 
       // Notify user
       await NotificationService.createNotification(

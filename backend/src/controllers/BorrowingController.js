@@ -9,7 +9,7 @@ class BorrowingController {
   static async requestBorrow(req, res, next) {
     try {
       const { bookId } = req.body;
-      const borrowId = await BorrowingService.requestBook(req.user.userId, bookId);
+      const borrowId = await BorrowingService.requestBook(req.user.user_id, bookId);
       sendSuccess(res, 'Borrow request submitted for approval', { borrowId }, 201);
     } catch (error) {
       next(error);
@@ -24,7 +24,7 @@ class BorrowingController {
   static async returnBook(req, res, next) {
     try {
       const { borrowId } = req.body;
-      const fine = await BorrowingService.returnBook(borrowId, req.user.userId);
+      const fine = await BorrowingService.returnBook(borrowId, req.user.user_id);
       sendSuccess(res, 'Book returned', { fine });
     } catch (error) {
       next(error);
@@ -33,7 +33,7 @@ class BorrowingController {
 
   static async getActiveBooks(req, res, next) {
     try {
-      const books = await BorrowingService.getActiveBooks(req.user.userId);
+      const books = await BorrowingService.getActiveBooks(req.user.user_id);
       sendSuccess(res, 'Active borrowings', { books });
     } catch (error) {
       next(error);
@@ -45,7 +45,7 @@ class BorrowingController {
       const page = parseInt(req.query.page) || DEFAULT_PAGE;
       const limit = parseInt(req.query.limit) || DEFAULT_LIMIT;
       
-      const { records, total } = await BorrowingService.getHistory(req.user.userId, page, limit);
+      const { records, total } = await BorrowingService.getHistory(req.user.user_id, page, limit);
       sendPaginated(res, 'Borrowing history', records, page, limit, total);
     } catch (error) {
       next(error);
@@ -85,7 +85,7 @@ class BorrowingController {
   static async approveBorrow(req, res, next) {
     try {
       const { borrowId } = req.params;
-      const approvedByUserId = req.user.userId;
+      const approvedByUserId = req.user.user_id;
 
       const result = await BorrowingService.approveBorrow(borrowId, approvedByUserId);
       sendSuccess(res, 'Borrow request approved', result);
@@ -99,7 +99,7 @@ class BorrowingController {
     try {
       const { borrowId } = req.params;
       const { reason } = req.body;
-      const approvedByUserId = req.user.userId;
+      const approvedByUserId = req.user.user_id;
 
       const result = await BorrowingService.rejectBorrow(borrowId, approvedByUserId, reason);
       sendSuccess(res, 'Borrow request rejected', result);

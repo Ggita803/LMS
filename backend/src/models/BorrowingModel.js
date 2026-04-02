@@ -22,9 +22,9 @@ class BorrowingModel {
       // Create borrowing record with pending_approval status
       const [result] = await pool.query(
         `INSERT INTO borrowing_records 
-         (user_id, book_id, copy_id, due_date, status, approval_status) 
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        [userId, bookId, copyId, dueDate.toISOString().split('T')[0], 'pending_approval', 'pending']
+         (user_id, book_id, copy_id, due_date, approval_status) 
+         VALUES (?, ?, ?, ?, ?)`,
+        [userId, bookId, copyId, dueDate.toISOString().split('T')[0], 'pending']
       );
 
       return result.insertId;

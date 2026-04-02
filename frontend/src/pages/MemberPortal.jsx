@@ -3,12 +3,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, 
   Filter,
-  Download
+  Download,
+  BookOpen
 } from 'lucide-react';
 import LibraryHeroImage from '../assets/images/LibraryHeroImage.jpg';
 import MemberLayout from './MemberLayout';
 import BookCard from './BookCard';
 import Modal from '../components/Modal';
+import MyBorrowingStatus from '../components/MyBorrowingStatus';
 import { getBooks } from '../services/bookService';
 import { getCategories } from '../services/categoryService';
 
@@ -69,9 +71,11 @@ const MemberPortal = () => {
   }, []);
 
   // Enhanced filter logic for 'Available' and 'Recently Added'
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const booksPerPage = 6;
+
+  // State for borrowing status toggle
+  const [showMyBorrowing, setShowMyBorrowing] = useState(false);
 
   let filteredBooks = books.filter(b =>
     (selectedCategory === 'All' || b.category === selectedCategory) &&
@@ -200,6 +204,30 @@ const MemberPortal = () => {
 
       {/* Main Browse Section */}
       <main className="max-w-7xl mx-auto px-4 py-20">
+        {/* My Borrowing Toggle */}
+        <div className="mb-8">
+          <button
+            onClick={() => setShowMyBorrowing(!showMyBorrowing)}
+            className="px-6 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-smooth flex items-center gap-2 font-semibold shadow-lg hover:shadow-xl"
+          >
+            <BookOpen className="w-5 h-5" />
+            {showMyBorrowing ? 'Hide' : 'Show'} My Borrowing Status
+          </button>
+        </div>
+
+        {/* My Borrowing Status Section */}
+        {showMyBorrowing && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="mb-12 p-6 bg-sky-50 dark:bg-sky-900/20 rounded-2xl border border-sky-200 dark:border-sky-800"
+          >
+            <MyBorrowingStatus />
+          </motion.div>
+        )}
+
+        {/* Browse Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
           <div>
             <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">

@@ -125,7 +125,7 @@ const Sidebar = () => {
     { icon: Users, label: 'Members', path: '/manage-users' },
     { icon: BookOpen, label: 'Books', path: '/books-library'},
     { icon: Database, label: 'Categories', path: '/manage-categories' },
-    { icon: BookMarked, label: 'Borrowings', path: '/borrowing' },
+    { icon: BookMarked, label: 'Borrowings', path: '/' },
     // { icon: History, label: 'Borrowing History', path: '/borrowing-history' },
     { icon: BarChart3, label: 'Analytics & Reports', path: '/reports' },
     { icon: HelpCircle, label: 'Help & FAQ', path: '/faq' },

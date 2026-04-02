@@ -3,6 +3,8 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import MemberLayout from './MemberLayout';
 import { useAuth } from '../context/AuthContext';
 import { getBooks } from '../services/bookService';
+import BorrowConfirmationModal from '../components/BorrowConfirmationModal';
+import api from '../services/api';
 import { 
   Book as BookIcon, 
   User, 
@@ -27,6 +29,7 @@ const BookDetails = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [borrowLoading, setBorrowLoading] = useState(false);
+  const [showBorrowModal, setShowBorrowModal] = useState(false);
   const [book, setBook] = useState(null);
 
   // Simplified check: if user object exists, they are considered authorized to see details
@@ -79,11 +82,35 @@ const BookDetails = () => {
     fetchBookData();
   }, [id, navigate]);
 
-  const handleBorrow = async () => {
+  const handleBorrow = () => {
+    if (!user) {
+      toast.error('Please log in to borrow books');
+      navigate('/login');
+      return;
+    }
+    setShowBorrowModal(true);
+  };
+
+  const handleConfirmBorrow = async (bookId) => {
     setBorrowLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    toast.success(`Request to borrow "${book.title}" submitted!`);
-    setBorrowLoading(false);
+    try {
+      const response = await api.post('/borrowing/request', {
+        bookId: bookId
+      });
+
+      toast.success('✅ Borrow request submitted! Awaiting librarian approval.');
+      setShowBorrowModal(false);
+      
+      // Redirect to member portal
+      setTimeout(() => {
+        navigate('/member-portal');
+      }, 1500);
+    } catch (error) {
+      console.error('Borrow error:', error);
+      toast.error(error.response?.data?.message || 'Failed to request book. Please try again.');
+    } finally {
+      setBorrowLoading(false);
+    }
   };
 
   if (loading) {
@@ -99,7 +126,7 @@ const BookDetails = () => {
   return (
     <MemberLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-fade-in">
-        <Link to="/" className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-sky-600 transition-smooth mb-8">
+        <Link to="/member-portal" className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-sky-600 transition-smooth mb-8">
           <ArrowLeft className="w-4 h-4" /> Back to Catalog
         </Link>
 
@@ -188,11 +215,11 @@ const BookDetails = () => {
               )}
               <button 
                 onClick={handleBorrow}
-                disabled={borrowLoading || book.status !== 'Available'}
-                className="px-12 py-4 bg-sky-600 hover:bg-sky-700 text-white rounded-2xl font-bold shadow-xl shadow-sky-200 dark:shadow-none transition-smooth flex items-center justify-center gap-3 disabled:opacity-50"
+                disabled={book.status !== 'Available'}
+                className="px-12 py-4 bg-sky-600 hover:bg-sky-700 text-white rounded-2xl font-bold shadow-xl shadow-sky-200 dark:shadow-none transition-smooth flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ShieldCheck className="w-6 h-6" />
-                {borrowLoading ? 'Processing...' : book.status === 'Available' ? 'Borrow This Book' : 'Join Waitlist'}
+                {book.status === 'Available' ? 'Borrow This Book' : 'Join Waitlist'}
               </button>
             </div>
             <div className="pt-2">
@@ -203,6 +230,14 @@ const BookDetails = () => {
           </div>
         </div>
       </div>
+
+      <BorrowConfirmationModal 
+        book={book}
+        isOpen={showBorrowModal}
+        onConfirm={handleConfirmBorrow}
+        onCancel={() => setShowBorrowModal(false)}
+        isLoading={borrowLoading}
+      />
     </MemberLayout>
   );
 };

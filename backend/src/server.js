@@ -17,6 +17,10 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 
+// Import scheduler & models
+const { scheduleOverdueChecker } = require('./utils/ScheduleJobs');
+const BookModel = require('./models/BookModel');
+
 const path = require('path');
 const app = express();
 
@@ -74,6 +78,13 @@ app.listen(PORT, () => {
   ║  🗄️  MySQL Database Connected          ║
   ╚════════════════════════════════════════╝
   `);
+
+  // Initialize scheduled jobs
+  scheduleOverdueChecker();
+  console.log('✅ Scheduled jobs initialized');
+
+  // Populate missing book copies for existing books
+  BookModel.populateMissingCopies().catch(err => console.error('❌ Error populating copies:', err));
 });
 
 module.exports = app;
