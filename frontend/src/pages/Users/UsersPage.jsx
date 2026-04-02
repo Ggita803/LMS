@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, Download, ChevronDown } from 'lucide-react';
 import DataTable from '../../components/DataTable/DataTable';
 import AddUserModal from './AddUserModal';
 import MainLayout from '../MainLayout';
@@ -7,12 +7,15 @@ import { createUser, getUsers, updateUser, deleteUser } from '../../services/use
 import UserDetailsModal from './UserDetailsModal';
 import EditUserModal from './EditUserModal';
 import ConfirmationModal from '../../components/ConfirmationModal';
+import { exportToPDF, exportToExcel, exportToCSV } from '../../utils/exportUtils';
+import toast from 'react-hot-toast';
 
 const UsersPageContent = () => {
   const [users, setUsers] = useState([]);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
 
   // Fetch users from backend
   useEffect(() => {
@@ -157,6 +160,42 @@ const UsersPageContent = () => {
     }
   };
 
+  // Export handlers
+  const handleExportUsers = (format) => {
+    const exportData = users.map(u => ({
+      'Username': u.username,
+      'First Name': u.first_name,
+      'Last Name': u.last_name,
+      'Email': u.email,
+      'Role': u.role,
+      'Joined': u.created_at ? u.created_at.split('T')[0] : '',
+    }));
+
+    const columns = [
+      { header: 'Username', dataKey: 'Username' },
+      { header: 'First Name', dataKey: 'First Name' },
+      { header: 'Last Name', dataKey: 'Last Name' },
+      { header: 'Email', dataKey: 'Email' },
+      { header: 'Role', dataKey: 'Role' },
+      { header: 'Joined', dataKey: 'Joined' },
+    ];
+
+    switch(format) {
+      case 'pdf':
+        exportToPDF(exportData, columns, 'users-list', 'Users Management Report');
+        break;
+      case 'excel':
+        exportToExcel(exportData, 'users-list.xlsx', 'Users');
+        break;
+      case 'csv':
+        exportToCSV(exportData, 'users-list');
+        break;
+      default:
+        toast.error('Invalid format');
+    }
+    setExportMenuOpen(false);
+  };
+
   // Action buttons for each row
   const renderActions = (row) => (
     <div className="flex gap-2">
@@ -196,13 +235,48 @@ const UsersPageContent = () => {
             Manage library members and administrators
           </p>
         </div>
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all font-semibold"
-        >
-          <Plus className="w-5 h-5" />
-          Add New User
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all font-semibold"
+          >
+            <Plus className="w-5 h-5" />
+            Add New User
+          </button>
+          
+          {/* Export Button */}
+          <div className="relative">
+            <button 
+              onClick={() => setExportMenuOpen(!exportMenuOpen)}
+              className="flex items-center gap-2 px-4 py-3 border-2 border-emerald-600 text-emerald-600 rounded-lg hover:bg-emerald-50 dark:hover:bg-slate-800 transition-all font-semibold"
+            >
+              <Download className="w-5 h-5" /> Export <ChevronDown className="w-4 h-4" />
+            </button>
+            
+            {exportMenuOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg z-50 border border-slate-200 dark:border-slate-700">
+                <button 
+                  onClick={() => handleExportUsers('pdf')}
+                  className="w-full text-left px-4 py-2 hover:bg-sky-50 dark:hover:bg-slate-700 text-sm text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700"
+                >
+                  📄 PDF Export
+                </button>
+                <button 
+                  onClick={() => handleExportUsers('excel')}
+                  className="w-full text-left px-4 py-2 hover:bg-sky-50 dark:hover:bg-slate-700 text-sm text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700"
+                >
+                  📊 Excel Export
+                </button>
+                <button 
+                  onClick={() => handleExportUsers('csv')}
+                  className="w-full text-left px-4 py-2 hover:bg-sky-50 dark:hover:bg-slate-700 text-sm text-slate-700 dark:text-slate-300 rounded-b-lg"
+                >
+                  📋 CSV Export
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Stats Cards */}

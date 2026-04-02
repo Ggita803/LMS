@@ -5,6 +5,15 @@ import { useTheme } from '../context/ThemeContext';
 // import MainLayout from './MainLayout';
 import WelcomeBanner from '../components/WelcomeBanner';
 import Breadcrumb from '../components/Breadcrumb';
+import Doreen from '../assets/team/doreen.jpeg';
+import hanifah from '../assets/team/hanifah.jpeg';
+import victoria from '../assets/team/victoria.jpeg';
+import mathias from '../assets/team/mathias.jpeg';
+import shafik from '../assets/team/shafik.jpeg';      
+import lucy from '../assets/team/lucy.jpeg';
+import nobert from '../assets/team/nobert.jpeg';
+import vivian from '../assets/team/vivian.jpeg';
+
 
 const AboutPage = () => {
   const features = [
@@ -55,40 +64,80 @@ const AboutPage = () => {
 
   const team = [
     {
-      name: 'Sarah Johnson',
+      name: 'Mbawadde Doreen',
       role: 'Founder & Director',
       emoji: '👩‍💼',
-      photo: 'https://randomuser.me/api/portraits/women/68.jpg',
+      photo: Doreen,
       bio: 'Visionary leader with a passion for literacy and community empowerment.',
       linkedin: 'https://linkedin.com/in/sarahjohnson',
       twitter: 'https://twitter.com/sarahjohnson',
       github: 'https://github.com/sarahjohnson',
     },
     {
-      name: 'Michael Chen',
+      name: 'Kibuuka Mathias',
       role: 'Head Librarian',
       emoji: '👨‍💼',
-      photo: 'https://randomuser.me/api/portraits/men/65.jpg',
+      photo: mathias,
       bio: 'Expert in library science, dedicated to curating diverse collections.',
       linkedin: 'https://linkedin.com/in/michaelchen',
       twitter: 'https://twitter.com/michaelchen',
       github: 'https://github.com/michaelchen',
     },
     {
-      name: 'Emily Rodriguez',
+      name: 'Mbazira Shafik',
       role: 'Tech Lead',
       emoji: '👩‍💻',
-      photo: 'https://randomuser.me/api/portraits/women/65.jpg',
+      photo: shafik,
       bio: 'Full-stack developer building seamless digital library experiences.',
       linkedin: 'https://linkedin.com/in/emilyrodriguez',
       twitter: 'https://twitter.com/emilyrodriguez',
       github: 'https://github.com/emilyrodriguez',
     },
     {
-      name: 'James Smith',
+      name: 'Kyazze Victoria',
       role: 'Community Manager',
       emoji: '👨‍💼',
-      photo: 'https://randomuser.me/api/portraits/men/68.jpg',
+      photo: victoria,
+      bio: 'Connecting readers and organizing engaging library events.',
+      linkedin: 'https://linkedin.com/in/jamessmith',
+      twitter: 'https://twitter.com/jamessmith',
+      github: 'https://github.com/jamessmith',
+    },
+    {
+      name: 'Katono Vivian',
+      role: 'Community Manager',
+      emoji: '👨‍💼',
+      photo: vivian,
+      bio: 'Connecting readers and organizing engaging library events.',
+      linkedin: 'https://linkedin.com/in/jamessmith',
+      twitter: 'https://twitter.com/jamessmith',
+      github: 'https://github.com/jamessmith',
+    },
+    {
+      name: 'Achom Hannifah',
+      role: 'Community Manager',
+      emoji: '👨‍💼',
+      photo: hanifah,
+      bio: 'Connecting readers and organizing engaging library events.',
+      linkedin: 'https://linkedin.com/in/jamessmith',
+      twitter: 'https://twitter.com/jamessmith',
+      github: 'https://github.com/jamessmith',
+    },
+    {
+      name: 'Ssenyonga Lucy',
+      role: 'Community Manager',
+      emoji: '👨‍💼',
+      photo: lucy,
+      bio: 'Connecting readers and organizing engaging library events.',
+      linkedin: 'https://linkedin.com/in/jamessmith',
+      twitter: 'https://twitter.com/jamessmith',
+      github: 'https://github.com/jamessmith',
+    },
+    {
+      name: 'Owing Nobert D', 
+      role: 'Community Manager',
+      emoji: '👨‍💼',
+      photo: nobert,
       bio: 'Connecting readers and organizing engaging library events.',
       linkedin: 'https://linkedin.com/in/jamessmith',
       twitter: 'https://twitter.com/jamessmith',

@@ -284,6 +284,7 @@ const ReportsPage = () => {
                   </button>
                 </div>
               )}
+            </div>
           </div>
         </div>
 

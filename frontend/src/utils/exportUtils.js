@@ -13,6 +13,17 @@ import toast from 'react-hot-toast';
  */
 export const exportToPDF = (data, columns, filename = 'report.pdf', title = 'Report') => {
   try {
+    // Validate data
+    if (!Array.isArray(data) || data.length === 0) {
+      toast.error('No data available to export');
+      return;
+    }
+    
+    if (!Array.isArray(columns) || columns.length === 0) {
+      toast.error('No columns defined for export');
+      return;
+    }
+
     const doc = new jsPDF();
     
     // Add title
@@ -29,9 +40,10 @@ export const exportToPDF = (data, columns, filename = 'report.pdf', title = 'Rep
       columns.map(col => {
         const value = row[col.dataKey];
         // Format based on type
+        if (value === null || value === undefined) return '-';
         if (typeof value === 'number') return value.toLocaleString();
         if (typeof value === 'boolean') return value ? 'Yes' : 'No';
-        return value || '-';
+        return String(value);
       })
     );
     
@@ -61,7 +73,7 @@ export const exportToPDF = (data, columns, filename = 'report.pdf', title = 'Rep
     toast.success('PDF exported successfully');
   } catch (error) {
     console.error('PDF export error:', error);
-    toast.error('Failed to export PDF');
+    toast.error(`Failed to export PDF: ${error.message}`);
   }
 };
 
@@ -73,11 +85,33 @@ export const exportToPDF = (data, columns, filename = 'report.pdf', title = 'Rep
  */
 export const exportToExcel = (data, filename = 'report.xlsx', sheetName = 'Data') => {
   try {
+    // Validate data
+    if (!Array.isArray(data) || data.length === 0) {
+      toast.error('No data available to export');
+      return;
+    }
+
+    // Clean data - ensure all values are serializable
+    const cleanedData = data.map(row => {
+      const cleanRow = {};
+      Object.keys(row).forEach(key => {
+        const value = row[key];
+        if (value === null || value === undefined) {
+          cleanRow[key] = '';
+        } else if (typeof value === 'object') {
+          cleanRow[key] = JSON.stringify(value);
+        } else {
+          cleanRow[key] = value;
+        }
+      });
+      return cleanRow;
+    });
+
     // Create worksheet from data
-    const worksheet = XLSX.utils.json_to_sheet(data);
+    const worksheet = XLSX.utils.json_to_sheet(cleanedData);
     
     // Auto-size columns
-    const colWidths = Object.keys(data[0] || {}).map(() => ({ wch: 15 }));
+    const colWidths = Object.keys(cleanedData[0] || {}).map(() => ({ wch: 18 }));
     worksheet['!cols'] = colWidths;
     
     // Create workbook
@@ -89,7 +123,7 @@ export const exportToExcel = (data, filename = 'report.xlsx', sheetName = 'Data'
     toast.success('Excel file exported successfully');
   } catch (error) {
     console.error('Excel export error:', error);
-    toast.error('Failed to export Excel');
+    toast.error(`Failed to export Excel: ${error.message}`);
   }
 };
 
@@ -100,8 +134,30 @@ export const exportToExcel = (data, filename = 'report.xlsx', sheetName = 'Data'
  */
 export const exportToCSV = (data, filename = 'report.csv') => {
   try {
+    // Validate data
+    if (!Array.isArray(data) || data.length === 0) {
+      toast.error('No data available to export');
+      return;
+    }
+
+    // Clean data - ensure all values are CSV-safe
+    const cleanedData = data.map(row => {
+      const cleanRow = {};
+      Object.keys(row).forEach(key => {
+        const value = row[key];
+        if (value === null || value === undefined) {
+          cleanRow[key] = '';
+        } else if (typeof value === 'object') {
+          cleanRow[key] = JSON.stringify(value);
+        } else {
+          cleanRow[key] = String(value);
+        }
+      });
+      return cleanRow;
+    });
+
     // Use papaparse to convert data to CSV
-    const csv = Papa.unparse(data);
+    const csv = Papa.unparse(cleanedData);
     
     // Create blob
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -117,10 +173,13 @@ export const exportToCSV = (data, filename = 'report.csv') => {
     link.click();
     document.body.removeChild(link);
     
+    // Clean up the URL object
+    URL.revokeObjectURL(url);
+    
     toast.success('CSV exported successfully');
   } catch (error) {
     console.error('CSV export error:', error);
-    toast.error('Failed to export CSV');
+    toast.error(`Failed to export CSV: ${error.message}`);
   }
 };
 
@@ -130,32 +189,42 @@ export const exportToCSV = (data, filename = 'report.csv') => {
  * @param {String} format - 'pdf' | 'excel' | 'csv'
  */
 export const exportAuthorData = (authorData, format = 'pdf') => {
-  const transformedData = authorData.map(author => ({
-    'Author Name': author.name,
-    'Total Borrows': author.count,
-    'Unique Readers': author.reach,
-    'Books in Collection': author.titles,
-  }));
-  
-  const columns = [
-    { header: 'Author Name', dataKey: 'Author Name' },
-    { header: 'Total Borrows', dataKey: 'Total Borrows' },
-    { header: 'Unique Readers', dataKey: 'Unique Readers' },
-    { header: 'Books in Collection', dataKey: 'Books in Collection' },
-  ];
-  
-  switch (format) {
-    case 'pdf':
-      exportToPDF(transformedData, columns, 'author-rankings', 'Top Trending Authors Report');
-      break;
-    case 'excel':
-      exportToExcel(transformedData, 'author-rankings.xlsx', 'Authors');
-      break;
-    case 'csv':
-      exportToCSV(transformedData, 'author-rankings');
-      break;
-    default:
-      toast.error('Invalid export format');
+  try {
+    if (!Array.isArray(authorData) || authorData.length === 0) {
+      toast.error('No author data available to export');
+      return;
+    }
+
+    const transformedData = authorData.map(author => ({
+      'Author Name': author.name || 'Unknown',
+      'Total Borrows': author.count || 0,
+      'Unique Readers': author.reach || 0,
+      'Books in Collection': author.titles || 0,
+    }));
+    
+    const columns = [
+      { header: 'Author Name', dataKey: 'Author Name' },
+      { header: 'Total Borrows', dataKey: 'Total Borrows' },
+      { header: 'Unique Readers', dataKey: 'Unique Readers' },
+      { header: 'Books in Collection', dataKey: 'Books in Collection' },
+    ];
+    
+    switch (format) {
+      case 'pdf':
+        exportToPDF(transformedData, columns, 'author-rankings', 'Top Trending Authors Report');
+        break;
+      case 'excel':
+        exportToExcel(transformedData, 'author-rankings.xlsx', 'Authors');
+        break;
+      case 'csv':
+        exportToCSV(transformedData, 'author-rankings');
+        break;
+      default:
+        toast.error('Invalid export format');
+    }
+  } catch (error) {
+    console.error('Author data export error:', error);
+    toast.error(`Failed to export author data: ${error.message}`);
   }
 };
 
@@ -165,32 +234,42 @@ export const exportAuthorData = (authorData, format = 'pdf') => {
  * @param {String} format - 'pdf' | 'excel' | 'csv'
  */
 export const exportFineRecoveryData = (fineData, format = 'pdf') => {
-  const transformedData = fineData.map(day => ({
-    'Day': day.day,
-    'Projected Collection': day.projected,
-    'Actual Collection': day.collected,
-    'Recovery Rate': `${Math.round((day.collected / day.projected) * 100)}%`,
-  }));
-  
-  const columns = [
-    { header: 'Day', dataKey: 'Day' },
-    { header: 'Projected Collection', dataKey: 'Projected Collection' },
-    { header: 'Actual Collection', dataKey: 'Actual Collection' },
-    { header: 'Recovery Rate', dataKey: 'Recovery Rate' },
-  ];
-  
-  switch (format) {
-    case 'pdf':
-      exportToPDF(transformedData, columns, 'fine-recovery', 'Weekly Fine Recovery Report');
-      break;
-    case 'excel':
-      exportToExcel(transformedData, 'fine-recovery.xlsx', 'Fine Recovery');
-      break;
-    case 'csv':
-      exportToCSV(transformedData, 'fine-recovery');
-      break;
-    default:
-      toast.error('Invalid export format');
+  try {
+    if (!Array.isArray(fineData) || fineData.length === 0) {
+      toast.error('No fine recovery data available to export');
+      return;
+    }
+
+    const transformedData = fineData.map(day => ({
+      'Day': day.day || 'N/A',
+      'Projected Collection': day.projected || 0,
+      'Actual Collection': day.collected || 0,
+      'Recovery Rate': day.projected > 0 ? `${Math.round((day.collected / day.projected) * 100)}%` : '0%',
+    }));
+    
+    const columns = [
+      { header: 'Day', dataKey: 'Day' },
+      { header: 'Projected Collection', dataKey: 'Projected Collection' },
+      { header: 'Actual Collection', dataKey: 'Actual Collection' },
+      { header: 'Recovery Rate', dataKey: 'Recovery Rate' },
+    ];
+    
+    switch (format) {
+      case 'pdf':
+        exportToPDF(transformedData, columns, 'fine-recovery', 'Weekly Fine Recovery Report');
+        break;
+      case 'excel':
+        exportToExcel(transformedData, 'fine-recovery.xlsx', 'Fine Recovery');
+        break;
+      case 'csv':
+        exportToCSV(transformedData, 'fine-recovery');
+        break;
+      default:
+        toast.error('Invalid export format');
+    }
+  } catch (error) {
+    console.error('Fine recovery export error:', error);
+    toast.error(`Failed to export fine recovery data: ${error.message}`);
   }
 };
 
@@ -201,6 +280,12 @@ export const exportFineRecoveryData = (fineData, format = 'pdf') => {
  */
 export const exportInstitutionalReport = (reportData, format = 'pdf') => {
   try {
+    // Validate report data
+    if (!reportData) {
+      toast.error('No report data available to export');
+      return;
+    }
+
     if (format === 'pdf') {
       const doc = new jsPDF();
       const pageHeight = doc.internal.pageSize.getHeight();
@@ -309,6 +394,6 @@ export const exportInstitutionalReport = (reportData, format = 'pdf') => {
     }
   } catch (error) {
     console.error('Report export error:', error);
-    toast.error('Failed to export report');
+    toast.error(`Failed to export report: ${error.message}`);
   }
 };

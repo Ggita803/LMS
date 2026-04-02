@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, Download, ChevronDown } from 'lucide-react';
 import DataTable from '../../components/DataTable/DataTable';
 import AddBookModal from './AddBookModal';
 import MainLayout from '../MainLayout';
@@ -7,6 +7,8 @@ import { getBooks, addBook, deleteBook, updateBook } from '../../services/bookSe
 import BookDetailsModal from './BookDetailsModal';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { getCategories } from '../../services/categoryService';
+import { exportToPDF, exportToExcel, exportToCSV } from '../../utils/exportUtils';
+import toast from 'react-hot-toast';
 
 const BooksPageContent = () => {
     // Delete handler
@@ -42,6 +44,7 @@ const BooksPageContent = () => {
     const [isDeleting, setIsDeleting] = useState(false);
   const [categories, setCategories] = useState([]);
   const [categoryMap, setCategoryMap] = useState({});
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
   // Fetch books and categories on mount
   useEffect(() => {
     const fetchData = async () => {
@@ -103,6 +106,44 @@ const BooksPageContent = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Export handler
+  const handleExportBooks = (format) => {
+    const exportData = books.map(b => ({
+      'Title': b.title,
+      'Author': b.author,
+      'ISBN': b.isbn,
+      'Category': b.category,
+      'Total Copies': b.copies,
+      'Available': b.available,
+      'Status': b.status,
+    }));
+
+    const columns = [
+      { header: 'Title', dataKey: 'Title' },
+      { header: 'Author', dataKey: 'Author' },
+      { header: 'ISBN', dataKey: 'ISBN' },
+      { header: 'Category', dataKey: 'Category' },
+      { header: 'Total Copies', dataKey: 'Total Copies' },
+      { header: 'Available', dataKey: 'Available' },
+      { header: 'Status', dataKey: 'Status' },
+    ];
+
+    switch(format) {
+      case 'pdf':
+        exportToPDF(exportData, columns, 'books-inventory', 'Books Inventory Report');
+        break;
+      case 'excel':
+        exportToExcel(exportData, 'books-inventory.xlsx', 'Books');
+        break;
+      case 'csv':
+        exportToCSV(exportData, 'books-inventory');
+        break;
+      default:
+        toast.error('Invalid format');
+    }
+    setExportMenuOpen(false);
   };
 
   const columns = [
@@ -238,13 +279,48 @@ const BooksPageContent = () => {
             Manage library book inventory and catalog
           </p>
         </div>
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all font-semibold"
-        >
-          <Plus className="w-5 h-5" />
-          Add New Book
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all font-semibold"
+          >
+            <Plus className="w-5 h-5" />
+            Add New Book
+          </button>
+          
+          {/* Export Button */}
+          <div className="relative">
+            <button 
+              onClick={() => setExportMenuOpen(!exportMenuOpen)}
+              className="flex items-center gap-2 px-4 py-3 border-2 border-emerald-600 text-emerald-600 rounded-lg hover:bg-emerald-50 dark:hover:bg-slate-800 transition-all font-semibold"
+            >
+              <Download className="w-5 h-5" /> Export <ChevronDown className="w-4 h-4" />
+            </button>
+            
+            {exportMenuOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg z-50 border border-slate-200 dark:border-slate-700">
+                <button 
+                  onClick={() => handleExportBooks('pdf')}
+                  className="w-full text-left px-4 py-2 hover:bg-sky-50 dark:hover:bg-slate-700 text-sm text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700"
+                >
+                  📄 PDF Export
+                </button>
+                <button 
+                  onClick={() => handleExportBooks('excel')}
+                  className="w-full text-left px-4 py-2 hover:bg-sky-50 dark:hover:bg-slate-700 text-sm text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700"
+                >
+                  📊 Excel Export
+                </button>
+                <button 
+                  onClick={() => handleExportBooks('csv')}
+                  className="w-full text-left px-4 py-2 hover:bg-sky-50 dark:hover:bg-slate-700 text-sm text-slate-700 dark:text-slate-300 rounded-b-lg"
+                >
+                  📋 CSV Export
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Stats Cards */}
