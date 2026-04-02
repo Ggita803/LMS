@@ -167,6 +167,180 @@ class BorrowingService {
       throw error;
     }
   }
+
+  // ===== APPROVAL WORKFLOW METHODS =====
+
+  // Request borrow (creates pending request)
+  static async requestBook(userId, bookId) {
+    try {
+      // Verify book exists
+      const book = await BookModel.findById(bookId);
+      if (!book) {
+        throw new NotFoundError('Book not found');
+      }
+
+      if (book.available_copies <= 0) {
+        throw new ValidationError('No copies available for this book');
+      }
+
+      const borrowId = await BorrowingModel.requestBorrow(userId, bookId);
+
+      // Create notification
+      await NotificationService.createNotification(
+        userId,
+        'borrow_request',
+        'Borrow Request Submitted',
+        `Your request to borrow "${book.title}" is pending approval`
+      );
+
+      return borrowId;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Approve borrow request (admin/librarian)
+  static async approveBorrow(borrowId, approvedByUserId) {
+    try {
+      // Get borrow request details
+      const [borrow] = await pool.query(
+        `SELECT br.*, b.title, u.user_id, u.email FROM borrowing_records br
+         JOIN books b ON br.book_id = b.book_id
+         JOIN users u ON br.user_id = u.user_id
+         WHERE br.borrow_id = ?`,
+        [borrowId]
+      );
+
+      if (borrow.length === 0) {
+        throw new NotFoundError('Borrow request not found');
+      }
+
+      const request = borrow[0];
+
+      if (request.approval_status !== 'pending') {
+        throw new ValidationError('This request has already been processed');
+      }
+
+      // Approve
+      await BorrowingModel.approveBorrow(borrowId, approvedByUserId);
+
+      // Notify user
+      await NotificationService.createNotification(
+        request.user_id,
+        'borrow_approved',
+        'Borrow Request Approved',
+        `Your request to borrow "${request.title}" has been approved. Due date: ${new Date(request.due_date).toDateString()}`
+      );
+
+      return { success: true, message: 'Borrow request approved' };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Reject borrow request (admin/librarian)
+  static async rejectBorrow(borrowId, approvedByUserId, rejectionReason = '') {
+    try {
+      // Get borrow request details
+      const [borrow] = await pool.query(
+        `SELECT br.*, b.title, u.user_id, u.email FROM borrowing_records br
+         JOIN books b ON br.book_id = b.book_id
+         JOIN users u ON br.user_id = u.user_id
+         WHERE br.borrow_id = ?`,
+        [borrowId]
+      );
+
+      if (borrow.length === 0) {
+        throw new NotFoundError('Borrow request not found');
+      }
+
+      const request = borrow[0];
+
+      if (request.approval_status !== 'pending') {
+        throw new ValidationError('This request has already been processed');
+      }
+
+      // Reject
+      await BorrowingModel.rejectBorrow(borrowId, approvedByUserId, rejectionReason);
+
+      // Notify user
+      await NotificationService.createNotification(
+        request.user_id,
+        'borrow_rejected',
+        'Borrow Request Rejected',
+        `Your request to borrow "${request.title}" was rejected. Reason: ${rejectionReason || 'N/A'}`
+      );
+
+      return { success: true, message: 'Borrow request rejected' };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // ===== ADMIN/LIBRARIAN METHODS =====
+
+  // Get pending borrow requests
+  static async getPendingRequests(page, limit, filters = {}) {
+    try {
+      const offset = (page - 1) * limit;
+      const result = await BorrowingModel.getPendingRequests(limit, offset, filters);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Get all active borrowings (admin view)
+  static async getAllActiveBorrowings(page, limit, filters = {}) {
+    try {
+      const offset = (page - 1) * limit;
+      const result = await BorrowingModel.getAllActiveBorrowings(limit, offset, filters);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Get overdue books
+  static async getOverdueBooks(page, limit) {
+    try {
+      const offset = (page - 1) * limit;
+      const result = await BorrowingModel.getOverdueBooks(limit, offset);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Get system borrowing statistics
+  static async getBorrowingStats() {
+    try {
+      const stats = await BorrowingModel.getBorrowingStats();
+      return stats;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Get user borrowing statistics
+  static async getUserBorrowingStats(userId) {
+    try {
+      const stats = await BorrowingModel.getUserBorrowingStats(userId);
+      return stats;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Update overdue status (scheduler job)
+  static async updateOverdueStatus() {
+    try {
+      const affected = await BorrowingModel.updateOverdueStatus();
+      return { affectedRows: affected };
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = BorrowingService;

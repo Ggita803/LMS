@@ -3,14 +3,22 @@ const { sendSuccess, sendPaginated } = require('../utils/response');
 const { DEFAULT_PAGE, DEFAULT_LIMIT } = require('../constants/appConstants');
 
 class BorrowingController {
-  static async checkout(req, res, next) {
+  // ===== USER ENDPOINTS =====
+
+  // Request to borrow a book
+  static async requestBorrow(req, res, next) {
     try {
       const { bookId } = req.body;
-      const borrowId = await BorrowingService.checkoutBook(req.user.userId, bookId);
-      sendSuccess(res, 'Book checked out', { borrowId }, 201);
+      const borrowId = await BorrowingService.requestBook(req.user.userId, bookId);
+      sendSuccess(res, 'Borrow request submitted for approval', { borrowId }, 201);
     } catch (error) {
       next(error);
     }
+  }
+
+  // Legacy checkout endpoint (redirects to request)
+  static async checkout(req, res, next) {
+    return this.requestBorrow(req, res, next);
   }
 
   static async returnBook(req, res, next) {
@@ -66,6 +74,135 @@ class BorrowingController {
 
       const receipt = await BorrowingService.payFine(borrowId, userId, amount);
       sendSuccess(res, 'Fine paid successfully', { receipt }, 201);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // ===== APPROVAL WORKFLOW ENDPOINTS =====
+
+  // Approve borrow request (admin/librarian)
+  static async approveBorrow(req, res, next) {
+    try {
+      const { borrowId } = req.params;
+      const approvedByUserId = req.user.userId;
+
+      const result = await BorrowingService.approveBorrow(borrowId, approvedByUserId);
+      sendSuccess(res, 'Borrow request approved', result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Reject borrow request (admin/librarian)
+  static async rejectBorrow(req, res, next) {
+    try {
+      const { borrowId } = req.params;
+      const { reason } = req.body;
+      const approvedByUserId = req.user.userId;
+
+      const result = await BorrowingService.rejectBorrow(borrowId, approvedByUserId, reason);
+      sendSuccess(res, 'Borrow request rejected', result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // ===== ADMIN/LIBRARIAN ENDPOINTS =====
+
+  // Get pending borrow requests
+  static async getPendingRequests(req, res, next) {
+    try {
+      const page = parseInt(req.query.page) || DEFAULT_PAGE;
+      const limit = parseInt(req.query.limit) || DEFAULT_LIMIT;
+      const userId = req.query.userId ? parseInt(req.query.userId) : null;
+
+      const { records, total } = await BorrowingService.getPendingRequests(
+        page,
+        limit,
+        { userId }
+      );
+
+      sendPaginated(
+        res,
+        'Pending borrow requests',
+        records,
+        page,
+        limit,
+        total
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Get all active borrowings (admin view)
+  static async getAllActiveBorrowings(req, res, next) {
+    try {
+      const page = parseInt(req.query.page) || DEFAULT_PAGE;
+      const limit = parseInt(req.query.limit) || DEFAULT_LIMIT;
+      const userId = req.query.userId ? parseInt(req.query.userId) : null;
+      const bookId = req.query.bookId ? parseInt(req.query.bookId) : null;
+
+      const { records, total } = await BorrowingService.getAllActiveBorrowings(
+        page,
+        limit,
+        { userId, bookId }
+      );
+
+      sendPaginated(
+        res,
+        'All active borrowings',
+        records,
+        page,
+        limit,
+        total
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Get overdue books
+  static async getOverdueBooks(req, res, next) {
+    try {
+      const page = parseInt(req.query.page) || DEFAULT_PAGE;
+      const limit = parseInt(req.query.limit) || DEFAULT_LIMIT;
+
+      const { records, total } = await BorrowingService.getOverdueBooks(
+        page,
+        limit
+      );
+
+      sendPaginated(
+        res,
+        'Overdue books',
+        records,
+        page,
+        limit,
+        total
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Get borrowing system statistics
+  static async getBorrowingStats(req, res, next) {
+    try {
+      const stats = await BorrowingService.getBorrowingStats();
+      sendSuccess(res, 'Borrowing statistics', { stats });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Get user borrowing statistics
+  static async getUserBorrowingStats(req, res, next) {
+    try {
+      const userId = req.params.userId || req.user.userId;
+      const stats = await BorrowingService.getUserBorrowingStats(userId);
+      sendSuccess(res, 'User borrowing statistics', { stats });
     } catch (error) {
       next(error);
     }

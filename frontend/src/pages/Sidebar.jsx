@@ -85,6 +85,7 @@ const Sidebar = () => {
     { icon: Mail, label: 'Send Notifications', path: '/send-notifications', section: 'members' },
     
     // ============ BORROWING & RETURNS ============
+    { icon: BarChart3, label: 'Borrowing Overview', path: '/borrowing-overview', section: 'borrowing' },
     { icon: BookMarked, label: 'Active Borrowings', path: '/active-borrowings', section: 'borrowing' },
     { icon: AlertCircle, label: 'Overdue Items', path: '/overdue-management', section: 'borrowing', color: 'text-red-600', badge: '12' },
     { icon: Clock, label: 'Due Soon', path: '/due-soon', section: 'borrowing' },
@@ -123,12 +124,10 @@ const Sidebar = () => {
     { icon: LayoutDashboard, label: 'Dashboard', path: '/librarian' },
     { icon: Users, label: 'Members', path: '/manage-users' },
     { icon: BookOpen, label: 'Books', path: '/books-library'},
-    {icon: Database, label: 'Categories', path: '/manage-categories' },
-    { icon: BarChart3, label: 'Analytics & Reports', path: '/reports' },
-    // { icon: Bookmark, label: 'My Reservations', path: '/reservations' },
-    // { icon: Library, label: 'My Bookshelf', path: '/my-library' },
+    { icon: Database, label: 'Categories', path: '/manage-categories' },
+    { icon: BookMarked, label: 'Borrowings', path: '/borrowing' },
     // { icon: History, label: 'Borrowing History', path: '/borrowing-history' },
-    // { icon: Heart, label: 'Wishlist', path: '/wishlist' },
+    { icon: BarChart3, label: 'Analytics & Reports', path: '/reports' },
     { icon: HelpCircle, label: 'Help & FAQ', path: '/faq' },
   ];
 
@@ -213,9 +212,9 @@ const Sidebar = () => {
                 <Plus className="w-5 h-5" />
                 <span className="text-xs">Add Member</span>
               </Link>
-              <Link to="/overdue-management" className="p-3 bg-gradient-to-br from-red-500 to-red-600 text-white rounded-lg hover:shadow-lg transition-all font-bold text-center text-sm flex flex-col items-center gap-1">
-                <AlertCircle className="w-5 h-5" />
-                <span className="text-xs">Overdue (12)</span>
+              <Link to="/admin/borrowing" className="p-3 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all font-bold text-center text-sm flex flex-col items-center gap-1">
+                <BookMarked className="w-5 h-5" />
+                <span className="text-xs">Borrowing</span>
               </Link>
               <Link to="/process-return" className="p-3 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-lg hover:shadow-lg transition-all font-bold text-center text-sm flex flex-col items-center gap-1">
                 <CheckCircle2 className="w-5 h-5" />
@@ -262,6 +261,9 @@ const Sidebar = () => {
             <div className="mb-2 p-3 rounded-xl border-l-4 border-l-amber-600 bg-amber-50 dark:bg-amber-900/10">
               <p className="text-xs font-bold text-amber-700 dark:text-amber-400 mb-2">📖 Borrowing & Returns</p>
               <div className="space-y-1">
+                <NavLink to="/borrowing-overview" className={({ isActive }) => `text-xs px-3 py-2 rounded-lg transition-smooth block ${isActive ? 'bg-amber-200 text-amber-700 font-bold' : 'text-slate-600 hover:text-amber-600'}`}>
+                  • 📊 Overview & Statistics
+                </NavLink>
                 <NavLink to="/active-borrowings" className={({ isActive }) => `text-xs px-3 py-2 rounded-lg transition-smooth block ${isActive ? 'bg-amber-200 text-amber-700 font-bold' : 'text-slate-600 hover:text-amber-600'}`}>
                   • Active Borrowings (145)
                 </NavLink>

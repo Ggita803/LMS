@@ -60,7 +60,7 @@ const Navbar = ({ isDark, toggleTheme, isMenuOpen, setIsMenuOpen }) => (
         <Link to="/about" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 capitalize">about</Link>
         <a href="#pricing" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600 capitalize">pricing</a>
         <Link to="/login" className="block text-slate-700 dark:text-slate-300 hover:text-sky-600">Login</Link>
-        <Link to="/register" className="block w-full px-4 py-2 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-lg text-center">Get Started</Link>
+        <Link to="/register" className="block w-full px-4 py-3 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-lg text-center font-semibold hover:shadow-lg transition-smooth">Get Started</Link>
       </div>
     )}
   </nav>
@@ -119,7 +119,7 @@ const Hero = () => (
         </motion.p>
 
         <motion.div 
-          className="flex flex-col sm:flex-row gap-4 pt-4"
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
@@ -127,14 +127,15 @@ const Hero = () => (
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            className="w-full sm:w-auto"
           >
-            <Link to="/register" className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-xl font-bold hover:shadow-lg transition-smooth">
-              Start Free Trial <ArrowRight className="ml-2 w-5 h-5" />
+            <Link to="/register" className="flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-xl font-bold hover:shadow-lg transition-smooth w-full sm:w-auto text-sm sm:text-base">
+              Start Free Trial <ArrowRight className="ml-2 w-4 sm:w-5 h-4 sm:h-5" />
             </Link>
           </motion.div>
           <motion.a 
             href="#features"
-            className="inline-flex items-center justify-center px-8 py-4 border-2 border-sky-300 text-sky-300 rounded-xl font-bold hover:bg-sky-500 hover:bg-opacity-20 transition-smooth"
+            className="flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 border-2 border-sky-300 text-sky-300 rounded-xl font-bold hover:bg-sky-500 hover:bg-opacity-20 transition-smooth w-full sm:w-auto text-sm sm:text-base"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -268,7 +269,7 @@ const LandingPage = () => {
                     </li>
                   ))}
                 </ul>
-                <Link to="/register" className={`w-full py-3 rounded-xl font-bold text-center block transition-smooth ${plan.recommended ? 'bg-sky-600 text-white hover:bg-sky-700' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-900 dark:text-white'}`}>Get Started</Link>
+                <Link to=\"/register\" className={`w-full py-3 sm:py-4 rounded-xl font-bold text-center block transition-smooth text-sm sm:text-base ${plan.recommended ? 'bg-gradient-to-r from-sky-500 to-sky-600 text-white hover:shadow-lg' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-900 dark:text-white'}`}>Get Started</Link>
               </div>
             ))}
           </div>
@@ -349,10 +350,10 @@ const LandingPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-sky-600 to-blue-600 mx-4 sm:mx-8 rounded-3xl mb-20 text-center">
-        <h2 className="heading-md text-white mb-4">Ready to Transform Your Library?</h2>
-        <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">Join hundreds of libraries using LMS to engage members and streamline operations.</p>
-        <Link to="/register" className="inline-flex items-center px-10 py-4 bg-white text-sky-600 rounded-xl font-bold hover:shadow-2xl transition-smooth hover:scale-105">Get Started Free <ArrowRight className="ml-2 w-5 h-5" /></Link>
+      <section className="py-12 sm:py-20 px-4 sm:px-0 bg-gradient-to-r from-sky-600 to-blue-600 mx-4 sm:mx-8 rounded-2xl sm:rounded-3xl mb-20 text-center">
+        <h2 className="text-2xl sm:heading-md text-white mb-3 sm:mb-4">Ready to Transform Your Library?</h2>
+        <p className="text-base sm:text-lg text-white/90 mb-8 max-w-2xl mx-auto px-2">Join hundreds of libraries using LMS to engage members and streamline operations.</p>
+        <Link to="/register" className="inline-flex w-full sm:w-auto items-center justify-center px-6 sm:px-10 py-3 sm:py-4 bg-white text-sky-600 rounded-xl font-bold hover:shadow-2xl transition-smooth hover:scale-105 text-sm sm:text-base">Get Started Free <ArrowRight className="ml-2 w-4 sm:w-5 h-4 sm:h-5" /></Link>
       </section>
 
       {/* Footer */}

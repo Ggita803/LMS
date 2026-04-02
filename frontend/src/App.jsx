@@ -25,6 +25,8 @@ import SettingsPage from './pages/SettingsPage';
 import NotificationsPage from './pages/NotificationsPage';
 import FAQPage from './pages/FAQPage';
 import BorrowingHistoryPage from './pages/BorrowingHistoryPage';
+import BorrowingDashboard from './pages/BorrowingDashboard';
+import AdminBorrowingManagement from './pages/AdminBorrowingManagement';
 import NotFoundPage from './pages/NotFoundPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import WishlistPage from './pages/WishlistPage';
@@ -46,6 +48,7 @@ import OverdueManagementPage from './pages/Borrowings/OverdueManagementPage';
 import DueSoonPage from './pages/Borrowings/DueSoonPage';
 import ProcessReturnPage from './pages/Borrowings/ProcessReturnPage';
 import RenewBooksPage from './pages/Borrowings/RenewBooksPage';
+import BorrowingOverview from './pages/BorrowingOverview';
 
 // Fine Pages
 import FineManagementPage from './pages/Fines/FineManagementPage';
@@ -130,6 +133,11 @@ function App() {
             {/* Phase 1 - New Pages - Now Public */}
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/borrowing-history" element={<BorrowingHistoryPage />} />
+            
+            {/* Borrowing Management Routes */}
+            <Route path="/borrowing" element={<ProtectedRoute><BorrowingDashboard /></ProtectedRoute>} />
+            <Route path="/admin/borrowing" element={<ProtectedRoute roles={['librarian']}><AdminBorrowingManagement /></ProtectedRoute>} />
+            <Route path="/borrowing-overview" element={<ProtectedRoute roles={['librarian']}><BorrowingOverview /></ProtectedRoute>} />
             
             {/* Phase 2 - Advanced Features - Now Public */}
             <Route path="/wishlist" element={<WishlistPage />} />
