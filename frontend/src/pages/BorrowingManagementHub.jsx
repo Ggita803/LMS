@@ -204,12 +204,12 @@ const ActiveBorrowingsContent = () => {
                     </div>
 
                     <div className="flex gap-2">
-                      <button onClick={() => handleReturn(borrowing.id)} className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition-colors flex items-center gap-1">
-                        <CheckIcon className="w-4 h-4" />
+                      <button onClick={() => handleReturn(borrowing.id)} className="px-4 py-2 text-sm font-semibold bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 active:bg-emerald-700 transition-colors flex items-center gap-2 shadow-md hover:shadow-lg">
+                        <CheckIcon className="w-5 h-5" />
                         Return
                       </button>
-                      <button onClick={() => handleRenew(borrowing.id)} className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors flex items-center gap-1">
-                        <Zap className="w-4 h-4" />
+                      <button onClick={() => handleRenew(borrowing.id)} className="px-4 py-2 text-sm font-semibold bg-blue-500 text-white rounded-lg hover:bg-blue-600 active:bg-blue-700 transition-colors flex items-center gap-2 shadow-md hover:shadow-lg">
+                        <Zap className="w-5 h-5" />
                         Renew
                       </button>
                     </div>
@@ -330,8 +330,8 @@ const OverdueContent = () => {
                     </div>
 
                     <div className="flex gap-2">
-                      <button onClick={() => handlePayFine(item.id, fine)} className="px-3 py-1 text-sm bg-emerald-600 text-white rounded hover:bg-emerald-700 transition-colors flex items-center gap-1">
-                        <DollarSign className="w-4 h-4" />
+                      <button onClick={() => handlePayFine(item.id, fine)} className="px-4 py-2 text-sm font-semibold bg-teal-500 text-white rounded-lg hover:bg-teal-600 active:bg-teal-700 transition-colors flex items-center gap-2 shadow-md hover:shadow-lg">
+                        <DollarSign className="w-5 h-5" />
                         Pay Fine
                       </button>
                     </div>
@@ -601,12 +601,12 @@ const ProcessReturnContent = () => {
                 </div>
 
                 <div className="flex gap-2">
-                  <button onClick={() => handleApprove(request.id)} className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition-colors flex items-center gap-1">
-                    <CheckIcon className="w-4 h-4" />
+                  <button onClick={() => handleApprove(request.id)} className="px-4 py-2 text-sm font-semibold bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 active:bg-emerald-700 transition-colors flex items-center gap-2 shadow-md hover:shadow-lg">
+                    <CheckIcon className="w-5 h-5" />
                     Approve
                   </button>
-                  <button onClick={() => handleReject(request.id)} className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors flex items-center gap-1">
-                    <XIcon className="w-4 h-4" />
+                  <button onClick={() => handleReject(request.id)} className="px-4 py-2 text-sm font-semibold bg-red-500 text-white rounded-lg hover:bg-red-600 active:bg-red-700 transition-colors flex items-center gap-2 shadow-md hover:shadow-lg">
+                    <XIcon className="w-5 h-5" />
                     Reject
                   </button>
                 </div>
@@ -699,8 +699,8 @@ const RenewBooksContent = () => {
                     </div>
                   </div>
 
-                  <button onClick={() => handleRenew(book.id)} className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors flex items-center gap-2">
-                    <Zap className="w-4 h-4" />
+                  <button onClick={() => handleRenew(book.id)} className="px-4 py-2 font-semibold bg-purple-500 text-white rounded-lg hover:bg-purple-600 active:bg-purple-700 transition-colors flex items-center gap-2 shadow-md hover:shadow-lg">
+                    <Zap className="w-5 h-5" />
                     Renew
                   </button>
                 </div>
