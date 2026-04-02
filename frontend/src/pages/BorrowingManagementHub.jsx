@@ -38,8 +38,10 @@ const OverviewContent = () => {
     try {
       setLoading(true);
       const data = await borrowingService.getBorrowingStats();
+      console.log('Received stats:', data);
       setStats(data);
     } catch (error) {
+      console.error('Stats error:', error);
       toast.error('Failed to fetch statistics');
     } finally {
       setLoading(false);
@@ -65,13 +67,13 @@ const OverviewContent = () => {
         />
         <StatCard
           icon={<Clock className="w-8 h-8" />}
-          label="Due Soon (3 days)"
-          value={stats?.dueSoon || 0}
+          label="Pending Requests"
+          value={stats?.pendingRequests || 0}
           color="bg-yellow-500"
         />
         <StatCard
           icon={<DollarSign className="w-8 h-8" />}
-          label="Pending Fines"
+          label="Outstanding Fines"
           value={`$${(stats?.pendingFines || 0).toFixed(2)}`}
           color="bg-orange-500"
         />
@@ -114,8 +116,10 @@ const ActiveBorrowingsContent = () => {
   const fetchActiveBorrowings = async () => {
     try {
       setLoading(true);
-      const data = await borrowingService.getAllActiveBorrowings(page, limit);
-      let items = data.records || [];
+      const response = await borrowingService.getAllActiveBorrowings(page, limit);
+      console.log('Active borrowings response:', response);
+      
+      let items = response.records || [];
 
       // Search filter
       if (search) {
@@ -137,6 +141,7 @@ const ActiveBorrowingsContent = () => {
 
       setBorrowings(items);
     } catch (error) {
+      console.error('Error fetching active borrowings:', error);
       toast.error('Failed to fetch active borrowings');
     } finally {
       setLoading(false);
@@ -246,8 +251,10 @@ const OverdueContent = () => {
   const fetchOverdue = async () => {
     try {
       setLoading(true);
-      const data = await borrowingService.getOverdueBooks(1, 20);
-      let items = data.records || [];
+      const response = await borrowingService.getOverdueBooks(1, 20);
+      console.log('Overdue response:', response);
+      
+      let items = response.records || [];
 
       if (search) {
         items = items.filter(
@@ -265,6 +272,7 @@ const OverdueContent = () => {
 
       setOverdue(items);
     } catch (error) {
+      console.error('Error fetching overdue items:', error);
       toast.error('Failed to fetch overdue items');
     } finally {
       setLoading(false);
@@ -350,8 +358,10 @@ const DueSoonContent = () => {
   const fetchDueSoon = async () => {
     try {
       setLoading(true);
-      const data = await borrowingService.getAllActiveBorrowings(1, 100);
-      let items = data.records || [];
+      const response = await borrowingService.getAllActiveBorrowings(1, 100);
+      console.log('Due soon response:', response);
+      
+      let items = response.records || [];
 
       // Filter for next 3 days
       const today = new Date();
@@ -373,6 +383,7 @@ const DueSoonContent = () => {
       items.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
       setDueSoon(items);
     } catch (error) {
+      console.error('Error fetching due soon items:', error);
       toast.error('Failed to fetch due soon items');
     } finally {
       setLoading(false);
@@ -434,8 +445,10 @@ const HistoryContent = () => {
   const fetchHistory = async () => {
     try {
       setLoading(true);
-      const data = await borrowingService.getHistory(page, limit);
-      let items = data.records || [];
+      const response = await borrowingService.getHistory(page, limit);
+      console.log('History response:', response);
+      
+      let items = response.records || [];
 
       if (search) {
         items = items.filter(
@@ -447,6 +460,7 @@ const HistoryContent = () => {
 
       setHistory(items);
     } catch (error) {
+      console.error('Error fetching history:', error);
       toast.error('Failed to fetch history');
     } finally {
       setLoading(false);
@@ -516,8 +530,10 @@ const ProcessReturnContent = () => {
   const fetchPending = async () => {
     try {
       setLoading(true);
-      const data = await borrowingService.getPendingRequests(1, 50);
-      let items = data.records || [];
+      const response = await borrowingService.getPendingRequests(1, 50);
+      console.log('Pending requests response:', response);
+      
+      let items = response.records || [];
 
       if (search) {
         items = items.filter(
@@ -529,6 +545,7 @@ const ProcessReturnContent = () => {
 
       setPending(items);
     } catch (error) {
+      console.error('Error fetching pending requests:', error);
       toast.error('Failed to fetch pending requests');
     } finally {
       setLoading(false);
@@ -614,8 +631,10 @@ const RenewBooksContent = () => {
   const fetchRenewable = async () => {
     try {
       setLoading(true);
-      const data = await borrowingService.getAllActiveBorrowings(1, 100);
-      let items = data.records || [];
+      const response = await borrowingService.getAllActiveBorrowings(1, 100);
+      console.log('Renewable books response:', response);
+      
+      let items = response.records || [];
 
       // Filter items that can still be renewed (not overdue yet)
       items = items.filter((item) => {
@@ -634,6 +653,7 @@ const RenewBooksContent = () => {
       items.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
       setRenewable(items);
     } catch (error) {
+      console.error('Error fetching renewable books:', error);
       toast.error('Failed to fetch renewable books');
     } finally {
       setLoading(false);
