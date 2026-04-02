@@ -269,7 +269,7 @@ const LandingPage = () => {
                     </li>
                   ))}
                 </ul>
-                <Link to=\"/register\" className={`w-full py-3 sm:py-4 rounded-xl font-bold text-center block transition-smooth text-sm sm:text-base ${plan.recommended ? 'bg-gradient-to-r from-sky-500 to-sky-600 text-white hover:shadow-lg' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-900 dark:text-white'}`}>Get Started</Link>
+                <Link to="/register" className={`w-full py-3 sm:py-4 rounded-xl font-bold text-center block transition-smooth text-sm sm:text-base ${plan.recommended ? 'bg-gradient-to-r from-sky-500 to-sky-600 text-white hover:shadow-lg' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-900 dark:text-white'}`}>Get Started</Link>
               </div>
             ))}
           </div>
