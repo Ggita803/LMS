@@ -31,7 +31,20 @@ app.use(helmet({
     policy: "cross-origin"
   }
 }));
-app.use(cors());
+
+// CORS Configuration
+const corsOptions = {
+  origin: [
+    'https://readright-03h8.onrender.com',
+    'http://localhost:5173',
+    'http://localhost:3000'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+app.use(cors(corsOptions));
+
 app.use(compression());
 app.use(morgan('dev'));
 app.use(express.json());
