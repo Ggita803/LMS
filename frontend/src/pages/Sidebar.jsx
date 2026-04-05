@@ -50,6 +50,7 @@ import {
   Loader
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import api from '../services/api';
 
 const Sidebar = () => {
   const { user } = useAuth();
@@ -179,68 +180,25 @@ const Sidebar = () => {
       const formData = new FormData();
       formData.append('profileImage', file);
 
-      const token = localStorage.getItem('authToken') || localStorage.getItem('token');
-      
-      if (!token) {
-        throw new Error('No authentication token found. Please login again.');
-      }
+      console.log('Token being sent via axios interceptor, making request to backend...');
 
-      console.log('Token found, sending request...');
-
-      const response = await fetch('/api/users/profile/image', {
-        method: 'POST',
+      const response = await api.post('/users/profile/image', formData, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
-        body: formData,
       });
 
       console.log('Response status:', response.status);
-      console.log('Response headers:', {
-        contentType: response.headers.get('content-type'),
-      });
+      console.log('Response data:', response.data);
 
-      // Handle response - clone it to allow multiple reads
-      let data;
-      try {
-        // Check if response has content
-        if (response.status === 204) {
-          // 204 No Content - successful but no body
-          data = { success: true };
-          console.log('204 No Content response');
-        } else if (response.headers.get('content-length') === '0') {
-          // Empty response body
-          console.warn('Empty response body from server');
-          data = { success: true };
-        } else {
-          // Try to parse JSON
-          data = await response.json();
-          console.log('Response data:', data);
-        }
-      } catch (parseError) {
-        console.error('Failed to parse JSON response:', parseError.message);
-        // For debugging, try to get the response text
-        try {
-          const textClone = response.clone();
-          const text = await textClone.text();
-          console.error('Raw response text:', text || '(empty)');
-        } catch (textError) {
-          console.error('Could not read response text:', textError.message);
-        }
-        throw new Error(`Server error: ${response.status} - ${parseError.message}`);
-      }
-
-      if (!response.ok) {
-        throw new Error(data.message || `Upload failed: ${response.status}`);
-      }
-
-      if (!data.data || !data.data.imageUrl) {
+      const imageUrl = response.data?.data?.imageUrl;
+      if (!imageUrl) {
         throw new Error('No image URL returned from server');
       }
 
       // Update local state with new image URL
-      console.log('Upload successful, updating UI with image:', data.data.imageUrl);
-      setProfileImageUrl(data.data.imageUrl);
+      console.log('Upload successful, updating UI with image:', imageUrl);
+      setProfileImageUrl(imageUrl);
       alert('✅ Profile image updated successfully!');
       console.log('Profile image upload completed successfully');
     } catch (error) {

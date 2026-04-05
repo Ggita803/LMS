@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { Mail, User, Phone, MapPin, Calendar, Edit2, Save, X, Camera, Loader } from 'lucide-react';
 import MainLayout from './MainLayout';
 import WelcomeBanner from '../components/WelcomeBanner';
+import api from '../services/api';
 
 const ProfilePage = () => {
   const { user } = useAuth();
@@ -46,35 +47,13 @@ const ProfilePage = () => {
       const formDataUpload = new FormData();
       formDataUpload.append('profileImage', file);
 
-      const token = localStorage.getItem('authToken') || localStorage.getItem('token');
-      const response = await fetch('/api/users/profile/image', {
-        method: 'POST',
+      const response = await api.post('/users/profile/image', formDataUpload, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
-        body: formDataUpload,
       });
 
-      // Handle response with error recovery
-      let data;
-      try {
-        if (response.status === 204) {
-          data = { success: true };
-        } else if (response.headers.get('content-length') === '0') {
-          data = { success: true };
-        } else {
-          data = await response.json();
-        }
-      } catch (parseError) {
-        console.error('Failed to parse response:', parseError);
-        throw new Error('Server returned invalid response');
-      }
-
-      if (!response.ok) {
-        throw new Error(data.message || `Upload failed: ${response.status}`);
-      }
-
-      setProfileImageUrl(data.data?.imageUrl || profileImageUrl);
+      setProfileImageUrl(response.data?.data?.imageUrl || profileImageUrl);
       alert('Profile image updated successfully!');
     } catch (error) {
       console.error('Image upload error:', error);
