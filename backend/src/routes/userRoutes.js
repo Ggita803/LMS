@@ -40,9 +40,11 @@ const uploadProfileImage = multer({
 
 // Middleware to handle multer errors
 const handleMulterError = (err, req, res, next) => {
+  console.log('🚨 handleMulterError called');
   console.log('Multer error handler called:', err?.code || err?.message);
   
   if (err instanceof multer.MulterError) {
+    console.warn('Multer error detected:', err.code, err.message);
     if (err.code === 'FILE_TOO_LARGE' || err.code === 'LIMIT_FILE_SIZE') {
       console.warn('File too large:', err.message);
       return res.status(400).json({
@@ -51,7 +53,6 @@ const handleMulterError = (err, req, res, next) => {
         code: 'FILE_TOO_LARGE'
       });
     }
-    console.warn('Multer error:', err.code, err.message);
     return res.status(400).json({
       success: false,
       message: err.message || 'File upload error',
@@ -64,14 +65,22 @@ const handleMulterError = (err, req, res, next) => {
       message: err.message || 'File upload error'
     });
   }
+  console.log('✅ No multer errors, continuing to next');
   next();
 };
 
 // Protected Routes
 router.get('/profile', authenticate, UserController.getProfile);
 router.put('/profile', authenticate, UserController.updateProfile);
-router.post('/profile/image', 
-  authenticate, 
+
+// Log upload route hits BEFORE authentication
+router.post('/profile/image', (req, res, next) => {
+  console.log('🚀 UPLOAD ROUTE HIT! POST /profile/image');
+  console.log('Headers:', req.headers);
+  console.log('Method:', req.method);
+  console.log('URL:', req.url);
+  next();
+}, authenticate, 
   uploadProfileImage.single('profileImage'), 
   handleMulterError, 
   UserController.uploadProfileImage
