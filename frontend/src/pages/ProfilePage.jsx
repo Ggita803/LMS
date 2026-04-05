@@ -22,6 +22,58 @@ const ProfilePage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size must be less than 5MB');
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append('profileImage', file);
+
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/users/profile/image', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formDataUpload,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to upload image');
+      }
+
+      setProfileImageUrl(data.data.imageUrl);
+      alert('Profile image updated successfully!');
+    } catch (error) {
+      console.error('Image upload error:', error);
+      alert(`Error uploading image: ${error.message}`);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
   const handleSave = () => {
     // Save changes
     setIsEditing(false);
@@ -42,13 +94,47 @@ const ProfilePage = () => {
           <div className="card mb-6">
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center gap-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-sky-400 to-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-bold">
-                  {user?.username?.charAt(0).toUpperCase() || 'U'}
+                <div className="relative group">
+                  {profileImageUrl ? (
+                    <img
+                      src={profileImageUrl}
+                      alt={user?.username}
+                      onClick={handleAvatarClick}
+                      disabled={isUploading}
+                      className="w-20 h-20 rounded-full object-cover cursor-pointer hover:opacity-80 transition-opacity border-2 border-sky-300"
+                    />
+                  ) : (
+                    <div
+                      onClick={handleAvatarClick}
+                      className="w-20 h-20 bg-gradient-to-br from-sky-400 to-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-bold cursor-pointer hover:opacity-80 transition-opacity"
+                    >
+                      {user?.username?.charAt(0).toUpperCase() || 'U'}
+                    </div>
+                  )}
+                  
+                  <div className="absolute bottom-0 right-0 bg-sky-600 p-2 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                    {isUploading ? (
+                      <Loader className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Camera className="w-4 h-4" />
+                    )}
+                  </div>
                 </div>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/gif,image/webp"
+                  onChange={handleFileChange}
+                  disabled={isUploading}
+                  className="hidden"
+                />
+
                 <div>
                   <h2 className="text-2xl font-bold">{formData.first_name} {formData.last_name}</h2>
                   <p className="text-muted">@{user?.username}</p>
                   <p className="text-xs text-sky-600 font-medium mt-2">Member since {new Date(user?.created_at).toLocaleDateString()}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Click avatar to change photo</p>
                 </div>
               </div>
               <button
