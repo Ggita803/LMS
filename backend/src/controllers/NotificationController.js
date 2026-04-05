@@ -12,7 +12,7 @@ class NotificationController {
       const offset = (page - 1) * limit;
 
       const { notifications, total } = await NotificationModel.getUserNotifications(
-        req.user.userId,
+        req.user.user_id,
         limit,
         offset
       );
@@ -26,7 +26,7 @@ class NotificationController {
   // Get unread notification count
   static async getUnreadCount(req, res, next) {
     try {
-      const unreadCount = await NotificationModel.getUnreadCount(req.user.userId);
+      const unreadCount = await NotificationModel.getUnreadCount(req.user.user_id);
       sendSuccess(res, 'Unread count retrieved', { unreadCount });
     } catch (error) {
       next(error);
@@ -44,7 +44,7 @@ class NotificationController {
         throw new NotFoundError('Notification not found');
       }
 
-      if (notification.user_id !== req.user.userId) {
+      if (notification.user_id !== req.user.user_id) {
         throw new Error('Unauthorized: Cannot mark other user notifications');
       }
 
@@ -58,7 +58,7 @@ class NotificationController {
   // Mark all notifications as read for user
   static async markAllAsRead(req, res, next) {
     try {
-      await NotificationModel.markAllAsRead(req.user.userId);
+      await NotificationModel.markAllAsRead(req.user.user_id);
       sendSuccess(res, 'All notifications marked as read');
     } catch (error) {
       next(error);
@@ -76,7 +76,7 @@ class NotificationController {
         throw new NotFoundError('Notification not found');
       }
 
-      if (notification.user_id !== req.user.userId) {
+      if (notification.user_id !== req.user.user_id) {
         throw new Error('Unauthorized: Cannot delete other user notifications');
       }
 

@@ -46,7 +46,7 @@ const ProfilePage = () => {
       const formDataUpload = new FormData();
       formDataUpload.append('profileImage', file);
 
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('token');
       const response = await fetch('/api/users/profile/image', {
         method: 'POST',
         headers: {

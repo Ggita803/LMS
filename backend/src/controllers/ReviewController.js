@@ -29,7 +29,7 @@ class ReviewController {
     try {
       const { bookId } = req.params;
       const { rating, comment } = req.body;
-      const userId = req.user.userId;
+      const userId = req.user.user_id;
 
       // Validate rating
       if (!rating || rating < 1 || rating > 5) {
@@ -77,7 +77,7 @@ class ReviewController {
     try {
       const { reviewId } = req.params;
       const { rating, comment } = req.body;
-      const userId = req.user.userId;
+      const userId = req.user.user_id;
 
       // Validate rating
       if (rating && (rating < 1 || rating > 5)) {
@@ -106,7 +106,7 @@ class ReviewController {
   static async deleteReview(req, res, next) {
     try {
       const { reviewId } = req.params;
-      const userId = req.user.userId;
+      const userId = req.user.user_id;
 
       // Verify ownership
       const review = await ReviewModel.findById(reviewId);

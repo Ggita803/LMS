@@ -200,7 +200,7 @@ class BorrowingController {
   // Get user borrowing statistics
   static async getUserBorrowingStats(req, res, next) {
     try {
-      const userId = req.params.userId || req.user.userId;
+      const userId = req.params.userId || req.user.user_id;
       const stats = await BorrowingService.getUserBorrowingStats(userId);
       sendSuccess(res, 'User borrowing statistics', { stats });
     } catch (error) {

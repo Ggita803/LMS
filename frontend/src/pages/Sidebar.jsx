@@ -134,33 +134,59 @@ const Sidebar = () => {
 
   // Handle avatar click - trigger file input
   const handleAvatarClick = () => {
-    fileInputRef.current?.click();
+    console.log('Avatar clicked, opening file picker...');
+    if (!fileInputRef.current) {
+      console.error('File input ref not found');
+      alert('File input error. Please refresh the page.');
+      return;
+    }
+    fileInputRef.current.click();
   };
 
   // Handle file selection and upload
   const handleFileChange = async (event) => {
+    console.log('File selected, starting upload process...');
     const file = event.target.files?.[0];
-    if (!file) return;
+    if (!file) {
+      console.warn('No file selected');
+      return;
+    }
+
+    console.log('File details:', { name: file.name, size: file.size, type: file.type });
 
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-      alert('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
+      const errorMsg = `Invalid file type: ${file.type}. Allowed: JPEG, PNG, GIF, WebP`;
+      console.error(errorMsg);
+      alert(`Please select a valid image file (JPEG, PNG, GIF, or WebP). Got: ${file.type}`);
       return;
     }
 
     // Validate file size (5MB max)
-    if (file.size > 5 * 1024 * 1024) {
-      alert('File size must be less than 5MB');
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      const errorMsg = `File too large: ${file.size} bytes (max: ${maxSize} bytes)`;
+      console.error(errorMsg);
+      alert(`File size must be less than 5MB. Your file: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
       return;
     }
 
     setIsUploading(true);
+    console.log('Starting upload to /api/users/profile/image');
+
     try {
       const formData = new FormData();
       formData.append('profileImage', file);
 
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+      
+      if (!token) {
+        throw new Error('No authentication token found. Please login again.');
+      }
+
+      console.log('Token found, sending request...');
+
       const response = await fetch('/api/users/profile/image', {
         method: 'POST',
         headers: {
@@ -169,18 +195,43 @@ const Sidebar = () => {
         body: formData,
       });
 
-      const data = await response.json();
+      console.log('Response status:', response.status);
+      console.log('Response headers:', {
+        contentType: response.headers.get('content-type'),
+      });
+
+      // Try to parse response
+      let data;
+      try {
+        data = await response.json();
+        console.log('Response data:', data);
+      } catch (parseError) {
+        console.error('Failed to parse JSON response:', parseError);
+        const text = await response.text();
+        console.error('Raw response:', text);
+        throw new Error(`Server error: ${response.status} - Invalid response format`);
+      }
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to upload image');
+        throw new Error(data.message || `Upload failed: ${response.status}`);
+      }
+
+      if (!data.data || !data.data.imageUrl) {
+        throw new Error('No image URL returned from server');
       }
 
       // Update local state with new image URL
+      console.log('Upload successful, updating UI with image:', data.data.imageUrl);
       setProfileImageUrl(data.data.imageUrl);
-      alert('Profile image updated successfully!');
+      alert('✅ Profile image updated successfully!');
+      console.log('Profile image upload completed successfully');
     } catch (error) {
-      console.error('Image upload error:', error);
-      alert(`Error uploading image: ${error.message}`);
+      console.error('Complete error details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+      });
+      alert(`❌ Error uploading image:\n\n${error.message}\n\nPlease check browser console for details.`);
     } finally {
       setIsUploading(false);
       // Reset file input
@@ -204,20 +255,15 @@ const Sidebar = () => {
       <div className="px-4 py-4">
         <div className="flex flex-col items-center text-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700">
           {/* Avatar - Clickable Image Upload */}
-          <div className="relative mb-3 group">
+          <div className="relative mb-3 group cursor-pointer" onClick={handleAvatarClick}>
             {profileImageUrl ? (
               <img
                 src={profileImageUrl}
                 alt={user?.username}
-                onClick={handleAvatarClick}
-                disabled={isUploading}
                 className="w-16 h-16 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold text-2xl object-cover cursor-pointer hover:opacity-80 transition-opacity border-2 border-sky-300"
               />
             ) : (
-              <div
-                onClick={handleAvatarClick}
-                className="w-16 h-16 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold text-2xl cursor-pointer hover:opacity-80 transition-opacity"
-              >
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold text-2xl cursor-pointer hover:opacity-80 transition-opacity">
                 {user?.username?.[0].toUpperCase()}
               </div>
             )}

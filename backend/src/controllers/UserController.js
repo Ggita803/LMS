@@ -13,7 +13,7 @@ class UserController {
   }
   static async getProfile(req, res, next) {
     try {
-      const user = await UserService.getUserProfile(req.user.userId);
+      const user = await UserService.getUserProfile(req.user.user_id);
       sendSuccess(res, 'Profile retrieved', { user });
     } catch (error) {
       next(error);
@@ -43,7 +43,7 @@ class UserController {
 
   static async updateProfile(req, res, next) {
     try {
-      await UserService.updateUserProfile(req.user.userId, req.body);
+      await UserService.updateUserProfile(req.user.user_id, req.body);
       sendSuccess(res, 'Profile updated');
     } catch (error) {
       next(error);
@@ -52,21 +52,43 @@ class UserController {
 
   static async uploadProfileImage(req, res, next) {
     try {
+      console.log('uploadProfileImage called');
+      console.log('req.file:', req.file);
+      console.log('req.user:', req.user);
+
       if (!req.file) {
+        console.warn('No file in upload request');
         return sendSuccess(res, 'No file uploaded', null, 400);
       }
 
-      // Generate image URL based on file location
+      if (!req.user || !req.user.user_id) {
+        console.warn('No user in request or user_id missing');
+        return sendSuccess(res, 'User not authenticated', null, 401);
+      }
+
+      const userId = req.user.user_id;
       const imageUrl = `/uploads/profile-images/${req.file.filename}`;
-      
+
+      console.log('Uploading image for userId:', userId);
+      console.log('Image filename:', req.file.filename);
+      console.log('Image URL:', imageUrl);
+
       // Update user profile with image URL
-      const updatedUser = await UserService.uploadProfileImage(req.user.userId, imageUrl);
+      const updatedUser = await UserService.uploadProfileImage(userId, imageUrl);
+      
+      if (!updatedUser) {
+        console.warn('User not found during image upload:', userId);
+        return sendSuccess(res, 'User not found', null, 404);
+      }
+
+      console.log('Profile image uploaded successfully for userId:', userId);
       
       sendSuccess(res, 'Profile image uploaded successfully', { 
         user: updatedUser,
         imageUrl 
       });
     } catch (error) {
+      console.error('Upload profile image error:', error);
       next(error);
     }
   }

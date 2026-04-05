@@ -40,24 +40,25 @@ const uploadProfileImage = multer({
 
 // Middleware to handle multer errors
 const handleMulterError = (err, req, res, next) => {
+  console.log('Multer error handler called:', err?.code || err?.message);
+  
   if (err instanceof multer.MulterError) {
-    if (err.code === 'FILE_TOO_LARGE') {
+    if (err.code === 'FILE_TOO_LARGE' || err.code === 'LIMIT_FILE_SIZE') {
+      console.warn('File too large:', err.message);
       return res.status(400).json({
         success: false,
-        message: 'File size must be less than 5MB'
+        message: 'File size must be less than 5MB',
+        code: 'FILE_TOO_LARGE'
       });
     }
-    if (err.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({
-        success: false,
-        message: 'File size must be less than 5MB'
-      });
-    }
+    console.warn('Multer error:', err.code, err.message);
     return res.status(400).json({
       success: false,
-      message: err.message || 'File upload error'
+      message: err.message || 'File upload error',
+      code: err.code
     });
   } else if (err) {
+    console.error('Upload error:', err.message);
     return res.status(400).json({
       success: false,
       message: err.message || 'File upload error'
@@ -69,7 +70,12 @@ const handleMulterError = (err, req, res, next) => {
 // Protected Routes
 router.get('/profile', authenticate, UserController.getProfile);
 router.put('/profile', authenticate, UserController.updateProfile);
-router.post('/profile/image', authenticate, uploadProfileImage.single('profileImage'), handleMulterError, UserController.uploadProfileImage);
+router.post('/profile/image', 
+  authenticate, 
+  uploadProfileImage.single('profileImage'), 
+  handleMulterError, 
+  UserController.uploadProfileImage
+);
 
 // Admin & Librarian Routes
 router.get('/', authenticate, authorize(ROLES.ADMIN, ROLES.LIBRARIAN), UserController.getAllUsers);
