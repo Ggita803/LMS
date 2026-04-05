@@ -200,16 +200,34 @@ const Sidebar = () => {
         contentType: response.headers.get('content-type'),
       });
 
-      // Try to parse response
+      // Handle response - clone it to allow multiple reads
       let data;
       try {
-        data = await response.json();
-        console.log('Response data:', data);
+        // Check if response has content
+        if (response.status === 204) {
+          // 204 No Content - successful but no body
+          data = { success: true };
+          console.log('204 No Content response');
+        } else if (response.headers.get('content-length') === '0') {
+          // Empty response body
+          console.warn('Empty response body from server');
+          data = { success: true };
+        } else {
+          // Try to parse JSON
+          data = await response.json();
+          console.log('Response data:', data);
+        }
       } catch (parseError) {
-        console.error('Failed to parse JSON response:', parseError);
-        const text = await response.text();
-        console.error('Raw response:', text);
-        throw new Error(`Server error: ${response.status} - Invalid response format`);
+        console.error('Failed to parse JSON response:', parseError.message);
+        // For debugging, try to get the response text
+        try {
+          const textClone = response.clone();
+          const text = await textClone.text();
+          console.error('Raw response text:', text || '(empty)');
+        } catch (textError) {
+          console.error('Could not read response text:', textError.message);
+        }
+        throw new Error(`Server error: ${response.status} - ${parseError.message}`);
       }
 
       if (!response.ok) {

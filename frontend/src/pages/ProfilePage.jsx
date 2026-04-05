@@ -55,13 +55,26 @@ const ProfilePage = () => {
         body: formDataUpload,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to upload image');
+      // Handle response with error recovery
+      let data;
+      try {
+        if (response.status === 204) {
+          data = { success: true };
+        } else if (response.headers.get('content-length') === '0') {
+          data = { success: true };
+        } else {
+          data = await response.json();
+        }
+      } catch (parseError) {
+        console.error('Failed to parse response:', parseError);
+        throw new Error('Server returned invalid response');
       }
 
-      setProfileImageUrl(data.data.imageUrl);
+      if (!response.ok) {
+        throw new Error(data.message || `Upload failed: ${response.status}`);
+      }
+
+      setProfileImageUrl(data.data?.imageUrl || profileImageUrl);
       alert('Profile image updated successfully!');
     } catch (error) {
       console.error('Image upload error:', error);

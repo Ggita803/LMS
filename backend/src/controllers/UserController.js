@@ -85,19 +85,38 @@ class UserController {
       console.log('Sending response with user:', updatedUser);
       console.log('Sending imageUrl:', imageUrl);
       
+      const responseData = {
+        success: true,
+        message: 'Profile image uploaded successfully',
+        data: { 
+          user: updatedUser,
+          imageUrl 
+        },
+        timestamp: new Date().toISOString()
+      };
+      
       console.log('Before sending success response');
-      sendSuccess(res, 'Profile image uploaded successfully', { 
-        user: updatedUser,
-        imageUrl 
-      });
-      console.log('After sending success response');
+      console.log('Response object:', JSON.stringify(responseData, null, 2));
+      res.status(200).json(responseData);
+      console.log('After sending success response - response sent');
     } catch (error) {
       console.error('Upload profile image error:', {
         message: error.message,
+        code: error.code,
         stack: error.stack,
-        code: error.code
+        type: error.constructor.name
       });
-      next(error);
+      
+      // Only send error response if headers not already sent
+      if (!res.headersSent) {
+        res.status(500).json({
+          success: false,
+          message: error.message || 'Image upload failed',
+          timestamp: new Date().toISOString()
+        });
+      } else {
+        console.error('Headers already sent, cannot send error response');
+      }
     }
   }
 }
