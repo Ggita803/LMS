@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Mail, User, Phone, MapPin, Calendar, Edit2, Save, X, Camera, Loader } from 'lucide-react';
 import MainLayout from './MainLayout';
@@ -18,6 +18,25 @@ const ProfilePage = () => {
     phone: user?.phone || '+256 712 345 678',
     location: user?.location || 'Kampala, Uganda',
   });
+
+  // Fetch latest profile data from backend on component mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await api.get('/users/profile');
+        const profileImageUrl = response.data?.data?.user?.profile_image_url;
+        if (profileImageUrl) {
+          console.log('Fetched profile image URL from backend:', profileImageUrl);
+          setProfileImageUrl(profileImageUrl);
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error.message);
+        // Fail silently - use initial value from user context
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

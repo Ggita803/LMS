@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 // import img from "../"
 import { 
@@ -58,6 +58,25 @@ const Sidebar = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState(user?.profile_image_url);
   const fileInputRef = useRef(null);
+
+  // Fetch latest profile data from backend on component mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await api.get('/users/profile');
+        const profileImageUrl = response.data?.data?.user?.profile_image_url;
+        if (profileImageUrl) {
+          console.log('Fetched profile image URL from backend:', profileImageUrl);
+          setProfileImageUrl(profileImageUrl);
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error.message);
+        // Fail silently - use initial value from user context
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   // Comprehensive Librarian Menu - Organized by Major Functions
   const librarianItems = [
