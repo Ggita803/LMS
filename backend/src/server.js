@@ -36,6 +36,7 @@ app.use(helmet({
 const corsOptions = {
   origin: [
     'https://campusvault.app',
+    'https://api.campusvault.app',
     'http://localhost:5173',
     'http://localhost:3000'
   ],
