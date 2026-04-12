@@ -49,6 +49,7 @@ const ManageCategories = () => {
   const handleAddCategory = async (form) => {
     setLoading(true);
     try {
+      console.log('Submitting category:', form); // Debug log
       const res = await createCategory(form);
       toast.success('Category added');
       setModalOpen(false);
