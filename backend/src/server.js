@@ -35,7 +35,7 @@ app.use(helmet({
 // CORS Configuration
 const corsOptions = {
   origin: [
-    'https://readright-03h8.onrender.com',
+    'https://campusvault.app',
     'http://localhost:5173',
     'http://localhost:3000'
   ],
