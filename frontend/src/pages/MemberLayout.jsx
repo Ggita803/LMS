@@ -198,12 +198,21 @@ const MemberLayout = ({ children }) => {
                 <ul className="space-y-4">
                   {["Features", "Pricing", "About", "Contact"].map((link) => (
                     <li key={link}>
-                      <a
-                        href="#"
-                        className="text-sm text-muted hover:text-sky-600 transition-smooth"
-                      >
-                        {link}
-                      </a>
+                      {link === 'About' ? (
+                        <Link
+                          to="/about"
+                          className="text-sm text-muted hover:text-sky-600 transition-smooth"
+                        >
+                          About
+                        </Link>
+                      ) : (
+                        <a
+                          href="#"
+                          className="text-sm text-muted hover:text-sky-600 transition-smooth"
+                        >
+                          {link}
+                        </a>
+                      )}
                     </li>
                   ))}
                 </ul>

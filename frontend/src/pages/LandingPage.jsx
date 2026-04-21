@@ -372,7 +372,13 @@ const LandingPage = () => {
                 <h3 className="font-bold text-slate-900 dark:text-white mb-6 uppercase text-xs tracking-widest">{cat}</h3>
                 <ul className="space-y-4">
                   {['Features', 'Pricing', 'About', 'Contact'].map((link) => (
-                    <li key={link}><a href="#" className="text-sm text-muted hover:text-sky-600 transition-smooth">{link}</a></li>
+                    <li key={link}>
+                      {link === 'About' ? (
+                        <Link to="/about" className="text-sm text-muted hover:text-sky-600 transition-smooth">About</Link>
+                      ) : (
+                        <a href="#" className="text-sm text-muted hover:text-sky-600 transition-smooth">{link}</a>
+                      )}
+                    </li>
                   ))}
                 </ul>
               </div>
