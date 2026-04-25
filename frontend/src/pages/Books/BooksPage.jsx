@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // Ensure backend asset URL is available
-const ASSET_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+const ASSET_URL = import.meta.env.VITE_API_URL?.replace(/\/api$/, '') || 'http://localhost:5000';
 import { Plus, Edit2, Trash2, Eye, Download, ChevronDown } from 'lucide-react';
 import DataTable from '../../components/DataTable/DataTable';
 import AddBookModal from './AddBookModal';

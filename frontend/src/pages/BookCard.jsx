@@ -1,5 +1,5 @@
 import React from 'react';
-const ASSET_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+const ASSET_URL = import.meta.env.VITE_API_URL?.replace(/\/api$/, '') || 'http://localhost:5000';
 import { Book, User, Info, ArrowRight, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
